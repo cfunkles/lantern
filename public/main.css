@@ -1,7 +1,45 @@
 .logo {
     background-image: url("IMG_0602.jpg");
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     width: 100vw;
-    height: 100vh;
+    height: 370px;
 }
+
+.navbar {
+    margin-bottom: 0;
+    background-color: 'midnightblue';
+}
+
+.logo img {
+    height: 15%;
+    width: 20%;
+    position: absolute;
+    left: 210px;
+}
+
+.center {
+    text-align: center;
+}
+
+.mainSearch {
+    position: absolute;
+    left: 41%;
+    top: 210px;
+    height: 40px;
+    width: 250px;
+    text-align: center;
+    color: midnightblue;
+}
+
+body {
+    background-color: midnightblue;
+    color: snow;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    color: gold;
+}
+
+
