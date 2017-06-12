@@ -15,7 +15,7 @@
     height: 15%;
     width: 20%;
     position: absolute;
-    left: 210px;
+    left: 230px;
 }
 
 .center {
@@ -33,13 +33,17 @@
 }
 
 body {
-    background-color: midnightblue;
-    color: snow;
+    background-color: snow;
+    color: midnightblue;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 h1 {
     color: gold;
+}
+
+p {
+    font-size: 16px;
 }
 
 
