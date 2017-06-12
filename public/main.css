@@ -1,0 +1,7 @@
+.logo {
+    background-image: url("IMG_0602.jpg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+}

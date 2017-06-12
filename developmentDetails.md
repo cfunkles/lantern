@@ -47,17 +47,17 @@ What will the database look like?
     -users collection
     -items collection
     users Collection
-        -Username
-        -hashed password
-        -name
-        -profile pic
-        -address
-        -e-mail
-        -phone
-        -age
-        -links to items
-        -user quality rating
-        -fines
+        -Username: string
+        -hashed password: hashed string
+        -name: string
+        -profile pic: src
+        -address: string
+        -e-mail: string
+        -phone: string
+        -age: number
+        -links to items: string
+        -user quality rating: number
+        -fines: boolean
     Items collection
         -name
         -model
@@ -65,12 +65,12 @@ What will the database look like?
         -kind
         -condition
         -gear quality rating
-        -category
-        -picture
-        -user it belongs to
-        -number of times it is checked out
-        -dates availible
-        -dates unavailible
+        -category: 
+        -picture: src
+        -user it belongs to: src
+        -number of times it is checked out: number
+        -dates availible: iso string
+        -dates unavailible: iso string
 
 How will the the user talk to the backend? API's!
     When signing up
