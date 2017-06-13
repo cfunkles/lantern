@@ -26,14 +26,14 @@ function logIn(req, data) {
 
 //mongo database
 var mongodb = require('mongodb');
-var db = mongodb();
+var db;
 mongodb.MongoClient.connect("mongodb://localhost", function(err, database) {
     if(err) {
         console.log(err);
         return;
     }
     console.log('Connected to Lantern database!');
-    db=database;
+    db = database;
     startListening();
 });
 
