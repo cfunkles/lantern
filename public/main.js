@@ -11,7 +11,6 @@ var mainAppVue = new Vue({
             password: '',
             name: '',
             state: '',
-            age: '',
             email: '',
             agreedToTerms: false,
         },
@@ -29,6 +28,10 @@ var mainAppVue = new Vue({
         //checks two password inputs for equalness. returns boolean when evaluated
         matchPasswords: function() {
             if(this.signUpForm.password === this.signUpForm.passwordChecker) {
+                //add this feature later
+                // if(password.length > 10) {
+                //     return true;
+                // }
                 return true;
             }
             else { return false; }

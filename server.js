@@ -40,7 +40,12 @@ mongodb.MongoClient.connect("mongodb://localhost", function(err, database) {
 //register new user
 app.post('/api/user', function(req, res) {
     //validates form entries
-    var requiredInput = ['username', 'password', 'name', 'state', 'email', 'age', 'agreedToTerms'];
+    //add this validation check later
+    // if(req.body.password.length < 10) {
+    //     res.send('password error');
+    //     return;
+    // }
+    var requiredInput = ['username', 'password', 'name', 'state', 'email', 'agreedToTerms'];
     for (var i = 0; i < requiredInput.length; i++) {
         if (req.body[requiredInput[i]] === undefined) {
             console.log('user did not fill in ' + requiredInput[i]);
@@ -65,7 +70,7 @@ app.post('/api/user', function(req, res) {
             //can't use data as param because it is null, just need to use req.body instead
             logIn(req, req.body);
             res.send('success');
-            console.log('account created!')
+            console.log('account created!');
         } else {
             //what to do if username exists
             res.send('exists');

@@ -61,6 +61,11 @@ section {
     border-radius: 3%;
 }
 
+input.password {
+    color: green;
+    border-color: green;
+}
+
 
 
 
