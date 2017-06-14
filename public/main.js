@@ -4,13 +4,14 @@ var mainAppVue = new Vue({
         loginClicked: false,
         createAccountClicked: false,
         signUpForm: {
-            passwordsMatch: false,
-            passwordInputOne: '',
-            passwordInputTwo: '',
-            state: '',
-            age: '',
-            email: '',
-            agreedToTerms: false,
+            // passwordsMatch: false,
+            username: 'Chuckles',
+            passwordInputOne: 'asdf',
+            passwordInputTwo: 'asdf',
+            state: 'co',
+            age: '2',
+            email: 'chuck',
+            agreedToTerms: true,
         },
         login: {
             title: '<h2>How to get started</h2>',
@@ -23,9 +24,10 @@ var mainAppVue = new Vue({
     },
     computed: {
         matchPasswords: function() {
-            if(this.passwordInputOne === this.passwordInputTwo) {
-                this.passwordsMatch = true;
+            if(this.signUpForm.passwordInputOne === this.signUpForm.passwordInputTwo) {
+                return true;
             }
+            else { return false }
         }
     },
     methods: {
@@ -45,13 +47,18 @@ var mainAppVue = new Vue({
         },
         submitNewAccount: function(event) {
             event.preventDefault();
-            console.log('will it run');
-            if(this.passwordsMatch) {
-                $.post('/api/user', this.signUpForm, function(data) {
-                    if(data) {
+            console.log('this ran!');
+            if(this.matchPasswords) {
+                console.log('passwords match!');
+                $.post('/api/user', this.signUpForm, function(res) {
+                    if(res) {
                         console.log('account created and logged in!');
+                    } else {
+                        console.log(res);
                     }
                 });
+            } else {
+                console.log('passwords don\'t match');
             }
         }
     }

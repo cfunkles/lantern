@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
     <link rel="stylesheet" href="main.css">
     <script src="https://unpkg.com/vue"></script>
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
     <title>Share the Outdoors, Explore the Outdoors</title>
 </head>
 <body>
@@ -58,7 +63,7 @@
             </div>
             <div v-if="createAccountClicked" class="row">
                 <form v-on:submit="submitNewAccount">
-                    <input type="text" placeholder="username" required>
+                    <input v-model="signUpForm.username" type="text" placeholder="username" required>
                     <input v-model="signUpForm.passwordInputOne" type="password" placeholder="password" required>
                     <input v-model="signUpForm.passwordInputTwo" type="password" placeholder="retype password" required>
                     <input v-model="signUpForm.state" type="text" placeholder="state" required>

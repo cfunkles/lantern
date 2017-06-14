@@ -38,7 +38,39 @@ mongodb.MongoClient.connect("mongodb://localhost", function(err, database) {
 });
 
 app.post('/api/user', function(req, res) {
-
+    //string validation to prevent empty strings
+    var requiredInput = ['username', 'passwordInputTwo', 'state', 'email', 'age', 'agreedToTerms'];
+    for (var i = 0; i < requiredInput.length; i++) {
+        if (req.body[requiredInput[i]] === undefined) {
+            console.log(requiredInput[i]);
+            res.send('form incomplete');
+            return;
+        }
+    }
+    db.collection('users').findOne({
+        //only searching for username
+        username: req.body.username,
+    }, function(err, user) {
+        if (user === null) {
+            //creates user only if it doesn't exist
+            db.collection('users').insert(req.body, function(err, creationInfo) {
+                if (err) {
+                    console.log(err);
+                    res.status(500);
+                    res.send("error");
+                    return;
+                }
+            });
+            //can't use data as param because it is null, just need to use req.body instead
+            logIn(req, req.body);
+            res.send('success');
+            console.log('account created!')
+        } else {
+            //what to do if username exists
+            res.send('exists');
+            console.log('account exists!');
+        }
+    });
 });
 
 app.use(express.static('public'));
