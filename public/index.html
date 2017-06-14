@@ -61,11 +61,13 @@
             <div class="row">
                 <button v-on:click="clickCreateAccount" class="btn btn-primary col-sm-offset-4 col-sm-4">Sign Up!</button>
             </div>
+            <!--Registration form. Adds info data to sign up form. All fields required, and terms is a checkbox-->
             <div v-if="createAccountClicked" class="row">
                 <form v-on:submit="submitNewAccount">
                     <input v-model="signUpForm.username" type="text" placeholder="username" required>
-                    <input v-model="signUpForm.passwordInputOne" type="password" placeholder="password" required>
-                    <input v-model="signUpForm.passwordInputTwo" type="password" placeholder="retype password" required>
+                    <input v-model="signUpForm.password" type="password" placeholder="password" required>
+                    <input v-model="signUpForm.passwordChecker" type="password" placeholder="retype password" required>
+                    <input v-model="signUpForm.name" type="text" placeholder="name" required>
                     <input v-model="signUpForm.state" type="text" placeholder="state" required>
                     <input v-model="signUpForm.email" type="text" placeholder="email" required>
                     <input v-model="signUpForm.age" type="text" placeholder="age" required>

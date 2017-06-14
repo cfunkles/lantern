@@ -37,12 +37,13 @@ mongodb.MongoClient.connect("mongodb://localhost", function(err, database) {
     startListening();
 });
 
+//register new user
 app.post('/api/user', function(req, res) {
-    //string validation to prevent empty strings
-    var requiredInput = ['username', 'passwordInputTwo', 'state', 'email', 'age', 'agreedToTerms'];
+    //validates form entries
+    var requiredInput = ['username', 'password', 'name', 'state', 'email', 'age', 'agreedToTerms'];
     for (var i = 0; i < requiredInput.length; i++) {
         if (req.body[requiredInput[i]] === undefined) {
-            console.log(requiredInput[i]);
+            console.log('user did not fill in ' + requiredInput[i]);
             res.send('form incomplete');
             return;
         }

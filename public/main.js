@@ -1,18 +1,21 @@
 var mainAppVue = new Vue({
     el: '#app',
     data: {
+        //for showing login
         loginClicked: false,
+        //for showing account creation
         createAccountClicked: false,
+        // sign Up for from
         signUpForm: {
-            // passwordsMatch: false,
-            username: 'Chuckles',
-            passwordInputOne: 'asdf',
-            passwordInputTwo: 'asdf',
-            state: 'co',
-            age: '2',
-            email: 'chuck',
-            agreedToTerms: true,
+            username: '',
+            password: '',
+            name: '',
+            state: '',
+            age: '',
+            email: '',
+            agreedToTerms: false,
         },
+        passwordChecker: '',
         login: {
             title: '<h2>How to get started</h2>',
             first: '<li>Set up your user account with a username and password. This user account will allow you to be a Sharer and an Explorer. You will need to agree to the terms of being both a Sharer and an Explorer.</li>',
@@ -23,14 +26,16 @@ var mainAppVue = new Vue({
         What: "What is Lantern? We want everyone to explore the outdoors, even if you do not have the equipment. This is where the kindergarten lesson of “sharing is caring” comes into play. At Lantern, a Sharer posts outdoor equipment they have to share with Explorers. For example, you have an extra tent in good condition that you never use. You can post it on Lantern, and another outdoor enthusiast visiting your region can rent it for the weekend. An Explorer searches for what equipment they will need based on location, availability, and/or type of equipment. The Sharer sets the price for the rental and how the equipment rental will occur. When an Explorer rents the equipment a hold will be placed for the value of the equipment, once the equipment is returned in good condition the hold will be removed and online the price of the rental will be charged." 
     },
     computed: {
+        //checks two password inputs for equalness. returns boolean when evaluated
         matchPasswords: function() {
-            if(this.signUpForm.passwordInputOne === this.signUpForm.passwordInputTwo) {
+            if(this.signUpForm.password === this.signUpForm.passwordChecker) {
                 return true;
             }
-            else { return false }
+            else { return false; }
         }
     },
     methods: {
+        //shows login form
         clickLogin: function() {
             if(this.loginClicked) {
                 this.loginClicked = false;
@@ -38,6 +43,7 @@ var mainAppVue = new Vue({
             }
             this.loginClicked = true;
         },
+        //shows create account form
         clickCreateAccount: function() {
             if(this.createAccountClicked) {
                 this.createAccountClicked = false;
@@ -45,9 +51,9 @@ var mainAppVue = new Vue({
             }
             this.createAccountClicked = true;
         },
+        //submits new user form. update error handeling stuff still
         submitNewAccount: function(event) {
             event.preventDefault();
-            console.log('this ran!');
             if(this.matchPasswords) {
                 console.log('passwords match!');
                 $.post('/api/user', this.signUpForm, function(res) {
