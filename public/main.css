@@ -48,10 +48,6 @@ body {
     background-color: midnightblue;
 }
 
-h1 {
-    color: midnightblue;
-}
-
 p {
     font-size: 16px;
 }
@@ -60,6 +56,11 @@ section {
     margin-bottom: 80px;
     padding: 50px;
     border: 1px solid midnightblue;
+    margin-top: 20px;
+    background-color: snow;
+    border-radius: 3%;
 }
+
+
 
 
