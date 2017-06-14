@@ -37,6 +37,10 @@ mongodb.MongoClient.connect("mongodb://localhost", function(err, database) {
     startListening();
 });
 
+app.post('/api/user', function(req, res) {
+
+});
+
 app.use(express.static('public'));
 
 // 404 File Not Found

@@ -54,14 +54,29 @@
                 </ol>
             </div>
             <div class="row">
-                <button class="btn btn-primary col-sm-offset-5 col-sm-2">Sign Up</button>
+                <button v-on:click="clickCreateAccount" class="btn btn-primary col-sm-offset-4 col-sm-4">Sign Up!</button>
             </div>
-        </section>
-        <section class="container center">
-            <h2>Login!</h2>
-            <input type="text" placeholder="username">
-            <input type="password" placeholder="password">
-            <button class="btn btn-primary">Login</button>
+            <div v-if="createAccountClicked" class="row">
+                <form v-on:submit="submitNewAccount">
+                    <input type="text" placeholder="username" required>
+                    <input v-model="signUpForm.passwordInputOne" type="password" placeholder="password" required>
+                    <input v-model="signUpForm.passwordInputTwo" type="password" placeholder="retype password" required>
+                    <input v-model="signUpForm.state" type="text" placeholder="state" required>
+                    <input v-model="signUpForm.email" type="text" placeholder="email" required>
+                    <input v-model="signUpForm.age" type="text" placeholder="age" required>
+                    <h3>Click here to agree to our terms <input v-model="signUpForm.agreedToTerms" type="checkbox" required></h3>
+                    <button type="submit" class="btn btn-primary">Click to Create Account</button>
+                </form>
+            </div>
+            <div class="row">
+                <button v-on:click="clickLogin" class="btn btn-primary col-sm-offset-4 col-sm-4">Alread Registered, click here!</button>
+            </div>
+            <div v-if="loginClicked" class="container center">
+                <h2>Login!</h2>
+                <input type="text" placeholder="username">
+                <input type="password" placeholder="password">
+                <button class="btn btn-primary">Login</button>
+            </div>
         </section>
         <section class="container center">
             <div class="row">
@@ -90,5 +105,6 @@
             </nav>
         </footer>
     </div>
+    <script src="main.js"></script>
 </body>
 </html>
