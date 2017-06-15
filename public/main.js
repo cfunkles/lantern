@@ -59,9 +59,19 @@ var mainAppVue = new Vue({
             event.preventDefault();
             if(this.matchPasswords) {
                 console.log('passwords match!');
+                var thatVm=this;
                 $.post('/api/user', this.signUpForm, function(res) {
                     if(res) {
                         console.log('account created and logged in!');
+                        thatVm.signUpForm.username = '';
+                        thatVm.signUpForm.password = '';
+                        //why is name not blue?
+                        thatVm.signUpForm.name = '';
+                        thatVm.signUpForm.state = '';
+                        thatVm.signUpForm.email = '';
+                        thatVm.signUpForm.agreedToTerms = false;
+                        thatVm.passwordChecker = '';
+                        thatVm.createAccountClicked = false;
                     } else {
                         console.log(res);
                     }
