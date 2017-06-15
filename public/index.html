@@ -26,8 +26,9 @@
                 <h4 class="nav navbar-nav" id='site-name'>Lantern</h4>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">Home</a></li>
-                    <li><a href="#">Sign Up</a> </li>
-                    <li><a href="#">Login</a></li>
+                    <li v-if="loggedIn"><a href="#">Profile</a></li>
+                    <li v-if="!loggedIn"><a href="#">Sign Up</a> </li>
+                    <li v-if="!loggedIn"><a href="#">Login</a></li>
                     <li><a href="#">About</a></li>
                 </ul>
             </div>
@@ -47,6 +48,8 @@
                 </p>
             </div>
         </section>
+
+
         <section class="container center">
             <div class="row">
                 <h2 class="col-sm-offset-3 col-sm-6">How to get started</h2>
@@ -58,11 +61,16 @@
                     <li class="col-sm-4">As an Explorer, search for the equipment based on location, equipment, and/or availability.</li>
                 </ol>
             </div>
+
+
             <div class="row">
-                <button v-on:click="clickCreateAccount" class="btn btn-primary col-sm-offset-4 col-sm-4">Sign Up!</button>
+                <button v-if="!loggedIn" v-on:click="clickCreateAccount" class="btn btn-primary col-sm-offset-4 col-sm-4">Sign Up!</button>
             </div>
+
+
             <!--Registration form. Adds info data to sign up form. All fields required, and terms is a checkbox-->
             <form v-if="createAccountClicked" v-on:submit="submitNewAccount" class="form-horizontal">
+                <h2>Sign up!</h2>
                 <div class="form-group">
                     <label class="control-label col-sm-offset-4 col-sm-2" for="username">username: </label>
                     <div class="col-sm-2">
@@ -162,21 +170,45 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-3 col-sm-2" for="submit">Click to create account!</label>
-                    <button type="submit" class="btn btn-primary col-sm-2" id="submit">Submit</button>
-                    <button type="reset" class="btn btn-primary col-sm-2">Reset Form</button>
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="resetRegistration">Messed Up Resgistration?</label>
+                    <button type="reset" id="resetRegistration" class="btn btn-primary col-sm-2">Reset</button>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="submitRegistration">Click to create account!</label>
+                    <button type="submit" class="btn btn-primary col-sm-2" id="submitRegistration">Submit</button>
                 </div> 
             </form>
-            <div class="row">
+
+
+            <div v-if="!loggedIn" class="row">
                 <button v-on:click="clickLogin" class="btn btn-primary col-sm-offset-4 col-sm-4">Alread Registered, click here!</button>
             </div>
-            <div v-if="loginClicked" class="container center">
+
+
+            <form v-if="loginClicked" v-on:submit="submitLogin" class="form-horizontal">
                 <h2>Login!</h2>
-                <input type="text" placeholder="username">
-                <input type="password" placeholder="password">
-                <button class="btn btn-primary">Login</button>
-            </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-3 col-sm-2" for="loginUsername">Username:</label>
+                    <div class="col-sm-2">
+                        <input v-model="loginForm.username" class="form-control col-sm-2" type="text" placeholder="MyUserName" id="loginUsername" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-3 col-sm-2" for="loginPassword"> Password:</label>
+                    <div class="col-sm-2">
+                        <input v-model="loginForm.password" class="form-control" type="password" id="loginPassword" placeholder="MySecretPassword" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="submitLogin">Click To login:</label>
+                    <div class="col-sm-1">
+                        <button type="submit" id="submitLogin" class="btn btn-primary">Login</button>
+                    </div>
+                </div>
+            </form>
         </section>
+
+
         <section class="container center">
             <div class="row">
                 <h2 class="col-sm-offset-3 col-sm-6">How Lantern Came About?</h2>

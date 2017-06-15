@@ -79,6 +79,21 @@ app.post('/api/user', function(req, res) {
     });
 });
 
+app.get('/api/user/:username/:password', function(req, res) {
+    db.collection('users').findOne({
+        username: req.params.username,
+        password: req.params.password
+    }, function(err, user) {
+        if(user === null) {
+            res.send('login error');
+            return;
+        }
+        console.log('user logged in!');
+        logIn(req, user);
+        res.send(user);
+    });
+});
+
 app.use(express.static('public'));
 
 // 404 File Not Found
