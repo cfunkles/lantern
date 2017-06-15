@@ -27,19 +27,24 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">Home</a></li>
                     <li v-if="loggedIn"><a href="#">Profile</a></li>
-                    <li v-if="!loggedIn"><a href="#">Sign Up</a> </li>
-                    <li v-if="!loggedIn"><a href="#">Login</a></li>
-                    <li><a href="#">About</a></li>
+                    <li v-if="!loggedIn" v-on:click="clickCreateAccount"><a href="#">Sign Up</a> </li>
+                    <li v-if="!loggedIn" v-on:click="clickLogin"><a href="#">Login</a></li>
+                    <li v-on:click="clickNavAbout"><a href="#">About</a></li>
+                    <li v-on:click="clickNavStory"><a href="#">Our Story</a></li>
                 </ul>
             </div>
         </nav>
+
+        <!--pretty picture and search section-->
         <div class="logo">
             <img src="lanternlogoname.png" alt="lantern logo">
             <div class="center">
                 <input class="mainSearch" type="text" placeholder="Search Location">
             </div>
         </div>
-        <section class="container center">
+
+        <!--About section-->
+        <section v-if="aboutClicked" class="container center">
             <div class="row">`
                 <h2 class="col-sm-offset-3 col-sm-6">What is Lantern?</h2>
             </div>
@@ -50,7 +55,7 @@
         </section>
 
 
-        <section class="container center">
+        <section v-if="!aboutClicked && !storyClicked" class="container center">
             <div class="row">
                 <h2 class="col-sm-offset-3 col-sm-6">How to get started</h2>
             </div>
@@ -209,7 +214,7 @@
         </section>
 
 
-        <section class="container center">
+        <section v-if="storyClicked" class="container center">
             <div class="row">
                 <h2 class="col-sm-offset-3 col-sm-6">How Lantern Came About?</h2>
             </div>

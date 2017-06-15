@@ -1,11 +1,6 @@
 var mainAppVue = new Vue({
     el: '#app',
     data: {
-        //for showing login
-        loginClicked: false,
-        //for showing account creation
-        createAccountClicked: false,
-        // sign Up for from
         signUpForm: {
             username: '',
             password: '',
@@ -14,13 +9,22 @@ var mainAppVue = new Vue({
             email: '',
             agreedToTerms: false,
         },
+        passwordChecker: '',
+
         loginForm: {
             username: '',
             password: '',
         },
-        passwordChecker: '',
+
+        //for click listeners
         loggedIn: false,
+        loginClicked: false,
+        createAccountClicked: false,
+        aboutClicked: false,
+        storyClicked: false,
     },
+
+
     computed: {
         //checks two password inputs for equalness. returns boolean when evaluated
         matchPasswords: function() {
@@ -34,8 +38,10 @@ var mainAppVue = new Vue({
             else { return false; }
         }
     },
+
+
     methods: {
-        //shows login form
+        //click listeners
         clickLogin: function() {
             if(this.loginClicked) {
                 this.loginClicked = false;
@@ -43,7 +49,6 @@ var mainAppVue = new Vue({
             }
             this.loginClicked = true;
         },
-        //shows create account form
         clickCreateAccount: function() {
             if(this.createAccountClicked) {
                 this.createAccountClicked = false;
@@ -51,6 +56,22 @@ var mainAppVue = new Vue({
             }
             this.createAccountClicked = true;
         },
+        clickNavAbout: function() {
+            if(this.aboutClicked) {
+                this.aboutClicked = false;
+                return;
+            }
+            this.aboutClicked = true;
+        },
+        clickNavStory: function() {
+            if(this.storyClicked) {
+                this.storyClicked = false;
+                return;
+            }
+            this.storyClicked = true;
+        },
+
+
         //submits new user form. update error handeling stuff still
         submitNewAccount: function(event) {
             event.preventDefault();
