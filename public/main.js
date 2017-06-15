@@ -16,6 +16,52 @@ var mainAppVue = new Vue({
             password: '',
         },
 
+        userInfo: {
+            username: '',
+            name: '',
+            state: '',
+            email: '',
+            numberOfPieces: '',
+            equipmentItems: [],
+            rentedItems: [],
+            sharerRating: '',
+            explorerReviews: [],
+            canSetUpGear: false,
+        },
+
+        equipmentItem: {
+            name: '',
+            brand: '',
+            model: '',
+            size: '',
+            category: {
+                shelter: false,
+                kitchen: false,
+                containers: false,
+                lighting: false,
+                sleeping: false,
+                other: false,
+            },
+            condition: {
+                new: false,
+                likeNew: false,
+                slightlyUsed: false,
+                fair: false,
+            },
+            description: '',
+            datesAvailible: '',
+            pickUpLocation: {
+                address: '',
+                city: '',
+                state: '',
+                zip:  '',
+            },
+            gearReview: [],
+            lanternRating: [],
+            ownerId: 'objectId',
+            // image: '',
+        },
+
         //for click listeners
         loggedIn: false,
         loginClicked: false,
@@ -23,6 +69,7 @@ var mainAppVue = new Vue({
         aboutClicked: false,
         storyClicked: false,
     },
+
 
 
     computed: {
@@ -91,6 +138,7 @@ var mainAppVue = new Vue({
                         thatVm.signUpForm.agreedToTerms = false;
                         thatVm.passwordChecker = '';
                         thatVm.createAccountClicked = false;
+                        thamVm.loginClicked = false;
                         thatVm.loggedIn = true;
                     } else {
                         console.log(res);
@@ -100,7 +148,8 @@ var mainAppVue = new Vue({
                 console.log('passwords don\'t match');
             }
         },
-        submitLogin: function() {
+        submitLogin: function(event) {
+            event.preventDefault();
             var thatVm = this;
             $.get('/api/user/' + this.loginForm.username + '/' + this.loginForm.password, function(user) {
                 if (user === 'login error') {
@@ -109,8 +158,23 @@ var mainAppVue = new Vue({
                     thatVm.loginForm.username = '';
                     thatVm.loginForm.password = '';
                     thatVm.loginClicked = false;
+                    thatVm.createAccountClicked = false;
                     thatVm.loggedIn = true;
                     console.log(user);
+                }
+            });
+        },
+        submitNewEquipment: function(event) { 
+            event.preventDefault();
+            var thatVm = this;
+            $.post('/api/equipments', this.equipmentItem, function(res) {
+                if(res) {
+                    console.log('item created!');
+                    console.log(res);
+                    thatVm.equipmentItem = '';
+                } else {
+                    console.log(res);
+                    console.log('item not created');
                 }
             });
         }

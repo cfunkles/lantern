@@ -16,6 +16,8 @@
 </head>
 <body>
     <div id="app">
+
+        <!--top navigation bar-->
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -43,6 +45,87 @@
             </div>
         </div>
 
+        <!--create new item section-->
+        <section v-if="loggedIn" class="container">
+            <form v-on:submit="submitNewEquipment" class="form-horizontal">
+                <h2 class="col-sm-offset-4">Add Equipment Item!</h2>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentName">Name of Equipment: </label>
+                    <div class="col-sm-2">
+                        <input class="form-control" v-model="equipmentItem.name" type="text" placeholder="Cozy tent" id="newEquipmentName" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentBrand">Brand: </label>
+                    <div class="col-sm-2">
+                        <input class="form-control" v-model="equipmentItem.brand" type="text" placeholder="Kelty" id="newEquipmentBrand" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentModel">Model: </label>
+                    <div class="col-sm-2">
+                        <input class="form-control" v-model="equipmentItem.model" type="text" placeholder="v-24" id="newEquipmentModel" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentSize">Size: </label>
+                    <div class="col-sm-2">
+                        <input class="form-control" v-model="equipmentItem.size" type="text" placeholder="2 person" id="newEquipmentSize" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentDescription">Description of item: </label>
+                    <div class="col-sm-2">
+                        <input class="form-control" v-model="equipmentItem.description" type="textarea" placeholder="This tent is good for backpacking" id="newEquipmentDescription" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-2 col-sm-2" for="newEquipmentCategory">Category:</label>
+                    <div class="col-sm-6">
+                        <label class="radio-inline"><input v-model="equipmentItem.category.shelter" type="radio" name="optCategory" id="newEquipmentCategory" required>:Shelter</label>
+                        <label class="radio-inline"><input v-model="equipmentItem.category.kitchen" type="radio" name="optCategory" id="newEquipmentCategory" required>:Kitchen</label>
+                        <label class="radio-inline"><input v-model="equipmentItem.category.containers" type="radio" name="optCategory" id="newEquipmentCategory" required>:Containers</label>
+                        <label class="radio-inline"><input v-model="equipmentItem.category.lighting" type="radio" name="optCategory" id="newEquipmentCategory" required>:Lighting</label>
+                        <label class="radio-inline"><input v-model="equipmentItem.category.sleeping" type="radio" name="optCategory" id="newEquipmentCategory" required>:Sleeping</label>
+                        <label class="radio-inline"><input v-model="equipmentItem.category.other" type="radio" name="optCategory" id="newEquipmentCategory" required>:Other</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-2 col-sm-2" for="newEquipmentCondition">Condition: </label>
+                    <div class="col-sm-6">
+                        <label class="radio-inline"><input v-model="equipmentItem.condition.new" type="radio" name="optCondition" id="newEquipmentCondition" required>:New</label>
+                        <label class="radio-inline"><input v-model="equipmentItem.condition.likeNew" type="radio" name="optCondition" id="newEquipmentCondition" required>:Like New</label>
+                        <label class="radio-inline"><input v-model="equipmentItem.condition.slightlyUsed" type="radio" name="optCondition" id="newEquipmentCondition" required>:Slightly Used</label>
+                        <label class="radio-inline"><input v-model="equipmentItem.condition.fair" type="radio" name="optCondition" id="newEquipmentCondition" required>:Fair</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentLocation">Rental Location: </label>
+                    <div class="col-sm-2">
+                        <input class="form-control" v-model="equipmentItem.pickUpLocation.address" type="text" placeholder="1234 Awesome St." id="newEquipmentLocation" required>
+                        <input class="form-control" v-model="equipmentItem.pickUpLocation.city" type="text" placeholder="Fort Cool" id="newEquipmentLocation" required>
+                        <input class="form-control" v-model="equipmentItem.pickUpLocation.state" type="text" placeholder="Elabrasky" id="newEquipmentLocation" required>
+                        <input class="form-control" v-model="equipmentItem.pickUpLocation.zip" type="text" placeholder="80083" id="newEquipmentLocation" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-3 col-sm-2" for="newEquipmentImage">Image: </label>
+                    <div class="col-sm-3">
+                        <input class="form-control" v-model="equipmentItem.image" type="file" id="newEquipmentImage" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="resetEquipment">Messed Up Typing?</label>
+                    <button type="reset" id="resetEquipment" class="btn btn-primary col-sm-2">Reset</button>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="submitEquipment">Share new equipment</label>
+                    <button type="submit" class="btn btn-primary col-sm-2" id="submitEquipment">Submit</button>
+                </div>
+            </form>
+        </section>
+
+
         <!--About section-->
         <section v-if="aboutClicked" class="container center">
             <div class="row">`
@@ -54,7 +137,7 @@
             </div>
         </section>
 
-
+        <!--Sign up instructions-->
         <section v-if="!aboutClicked && !storyClicked" class="container center">
             <div class="row">
                 <h2 class="col-sm-offset-3 col-sm-6">How to get started</h2>
@@ -67,7 +150,7 @@
                 </ol>
             </div>
 
-
+            <!--Show sign up form-->
             <div class="row">
                 <button v-if="!loggedIn" v-on:click="clickCreateAccount" class="btn btn-primary col-sm-offset-4 col-sm-4">Sign Up!</button>
             </div>
@@ -184,12 +267,12 @@
                 </div> 
             </form>
 
-
+            <!--shows loggin form-->
             <div v-if="!loggedIn" class="row">
                 <button v-on:click="clickLogin" class="btn btn-primary col-sm-offset-4 col-sm-4">Alread Registered, click here!</button>
             </div>
 
-
+            <!--the login form-->
             <form v-if="loginClicked" v-on:submit="submitLogin" class="form-horizontal">
                 <h2>Login!</h2>
                 <div class="form-group">
@@ -213,7 +296,7 @@
             </form>
         </section>
 
-
+        <!--Story of Lantern-->
         <section v-if="storyClicked" class="container center">
             <div class="row">
                 <h2 class="col-sm-offset-3 col-sm-6">How Lantern Came About?</h2>
@@ -221,8 +304,9 @@
             <div class="row">
                 <p class="col-sm-offset-3 col-sm-6">About The idea baby for Lantern came about after my wife and I decided we wanted to visit San Francisco. We realized we had enough frequent flyer miles to fly to San Francisco from our home in Colorado. Unfortunately, when we looked at hotel costs we realized we could not afford the trip after a rental car and food expenses. If only we could camp near San Francisco we would save the cost of hotels and breakfast. We are avid campers in Colorado and with all the necessary gear (plus a little extra!). But how do you bring all your camping gear on a plane without all the extra fees. This is where the Lantern idea was born. What if we could rent camping gear from someone in San Francisco and camp near San Francisco? Could we rent out our extra camping stuff when we are not using it? Could we share our outdoor expertise with people visiting Colorado? And the lantern was lit!</p>
             </div>
-
         </section>
+
+        <!--bottom navigation-->
         <footer>
             <nav class="navbar navbar-default navbar-static-bottom">
                 <div class="container-fluid">
