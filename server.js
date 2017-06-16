@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var multer = require('multer');
 
 //body parser boilerplate
 var bodyParser = require('body-parser');
@@ -17,7 +18,7 @@ app.use(expressSession({
     saveUninitialized: true
 }));
 //verification function
-function logIn(req, data) {
+function setUpSession(req, data) {
     req.session.user = {
         _id: data._id,
         username: data.username
@@ -59,7 +60,7 @@ app.post('/api/user', function(req, res) {
     }, function(err, user) {
         if (user === null) {
             //creates user only if it doesn't exist
-            db.collection('users').insert(req.body, function(err, creationInfo) {
+            db.collection('users').insertOne(req.body, function(err, creationInfo) {
                 if (err) {
                     console.log(err);
                     res.status(500);
@@ -68,8 +69,8 @@ app.post('/api/user', function(req, res) {
                 }
             });
             //can't use data as param because it is null, just need to use req.body instead
-            logIn(req, req.body);
-            res.send('success');
+            setUpSession(req, req.body);
+            res.send({success:'success'});
             console.log('account created!');
         } else {
             //what to do if username exists
@@ -89,26 +90,25 @@ app.get('/api/user/:username/:password', function(req, res) {
             return;
         }
         console.log('user logged in!');
-        logIn(req, user);
+        setUpSession(req, user);
         res.send(user);
     });
 });
 
-app.post('/api/equipments', function(req, res) {
+app.post('/api/itemPhoto', multer({dest: 'public/images'}).single('gearImage'), function(req, res) {
     if(!req.session.user){
         res.status(403);
         res.send('forbidden');
+        return;
     }
+    req.body.imageFileName = req.file.filename;
+    req.body.ownerId = req.session.user._id;
     db.collection('equipments').insertOne(req.body, function(err, creationInfo) {
-        if(err) {
-            console.log(err);
-            res.status(500);
-            res.send('gear error');
-            return;
-        }
-        console.log('equipment added');
-        res.send('gear success!');
+        
     });
+    console.log(req.body);
+    console.log(req.file);
+    res.send('I got it!');
 });
 
 app.use(express.static('public'));

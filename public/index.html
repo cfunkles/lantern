@@ -80,23 +80,29 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-2 col-sm-2" for="newEquipmentCategory">Category:</label>
-                    <div class="col-sm-6">
-                        <label class="radio-inline"><input v-model="equipmentItem.category.shelter" type="radio" name="optCategory" id="newEquipmentCategory" required>:Shelter</label>
-                        <label class="radio-inline"><input v-model="equipmentItem.category.kitchen" type="radio" name="optCategory" id="newEquipmentCategory" required>:Kitchen</label>
-                        <label class="radio-inline"><input v-model="equipmentItem.category.containers" type="radio" name="optCategory" id="newEquipmentCategory" required>:Containers</label>
-                        <label class="radio-inline"><input v-model="equipmentItem.category.lighting" type="radio" name="optCategory" id="newEquipmentCategory" required>:Lighting</label>
-                        <label class="radio-inline"><input v-model="equipmentItem.category.sleeping" type="radio" name="optCategory" id="newEquipmentCategory" required>:Sleeping</label>
-                        <label class="radio-inline"><input v-model="equipmentItem.category.other" type="radio" name="optCategory" id="newEquipmentCategory" required>:Other</label>
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentCategory">Category:</label>
+                    <div class="col-sm-2">
+                        <select v-model="equipmentItem.category" id="newEquipmentCategory" required>
+                            <option value="" disabled selected>--</option>
+                            <option value="shelter">Shelter</option>
+                            <option value="kitchen">Kitchen</option>
+                            <option value="containers">Containers</option>
+                            <option value="lighting">Lighting</option>
+                            <option value="sleeping">Sleeping</option>
+                            <option value="other">Other</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-2 col-sm-2" for="newEquipmentCondition">Condition: </label>
-                    <div class="col-sm-6">
-                        <label class="radio-inline"><input v-model="equipmentItem.condition.new" type="radio" name="optCondition" id="newEquipmentCondition" required>:New</label>
-                        <label class="radio-inline"><input v-model="equipmentItem.condition.likeNew" type="radio" name="optCondition" id="newEquipmentCondition" required>:Like New</label>
-                        <label class="radio-inline"><input v-model="equipmentItem.condition.slightlyUsed" type="radio" name="optCondition" id="newEquipmentCondition" required>:Slightly Used</label>
-                        <label class="radio-inline"><input v-model="equipmentItem.condition.fair" type="radio" name="optCondition" id="newEquipmentCondition" required>:Fair</label>
+                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentCondition">Condition: </label>
+                    <div class="col-sm-2">
+                        <select v-model="equipmentItem.condition" id="newEquipmentCondition" required>
+                            <option value="" disabled selected>--</option>
+                            <option value="new">New</option>
+                            <option value="like new">Like New</option>
+                            <option value="slightly used">Slightly Used</option>
+                            <option value="fair">Fair</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -111,12 +117,12 @@
                 <div class="form-group">
                     <label class="control-label col-sm-offset-3 col-sm-2" for="newEquipmentImage">Image: </label>
                     <div class="col-sm-3">
-                        <input class="form-control" v-model="equipmentItem.image" type="file" id="newEquipmentImage" required>
+                        <input class="form-control" type="file" id="newEquipmentImage" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-sm-offset-4 col-sm-2" for="resetEquipment">Messed Up Typing?</label>
-                    <button type="reset" id="resetEquipment" class="btn btn-primary col-sm-2">Reset</button>
+                    <button v-on:click="clearForm" id="resetEquipment" class="btn btn-primary col-sm-2">Reset</button>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-sm-offset-4 col-sm-2" for="submitEquipment">Share new equipment</label>
@@ -259,7 +265,7 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label col-sm-offset-4 col-sm-2" for="resetRegistration">Messed Up Resgistration?</label>
-                    <button type="reset" id="resetRegistration" class="btn btn-primary col-sm-2">Reset</button>
+                    <button type='notSubmit' v-on:click="clearForm" id="resetRegistration" class="btn btn-primary col-sm-2">Reset</button>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-sm-offset-4 col-sm-2" for="submitRegistration">Click to create account!</label>

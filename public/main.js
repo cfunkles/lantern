@@ -22,7 +22,7 @@ var mainAppVue = new Vue({
             state: '',
             email: '',
             numberOfPieces: '',
-            equipmentItems: [],
+            equipmentItems: [],//an array of objects with one property being a boolean value of item checked out.
             rentedItems: [],
             sharerRating: '',
             explorerReviews: [],
@@ -34,20 +34,8 @@ var mainAppVue = new Vue({
             brand: '',
             model: '',
             size: '',
-            category: {
-                shelter: false,
-                kitchen: false,
-                containers: false,
-                lighting: false,
-                sleeping: false,
-                other: false,
-            },
-            condition: {
-                new: false,
-                likeNew: false,
-                slightlyUsed: false,
-                fair: false,
-            },
+            category: '',
+            condition: '',
             description: '',
             datesAvailible: '',
             pickUpLocation: {
@@ -56,10 +44,9 @@ var mainAppVue = new Vue({
                 state: '',
                 zip:  '',
             },
-            gearReview: [],
-            lanternRating: [],
-            ownerId: 'objectId',
-            // image: '',
+            gearReview: [],//going to fill this array with objects the have rating number and comments
+            ownerId: '',
+            imageFileName: '',
         },
 
         //for click listeners
@@ -126,19 +113,16 @@ var mainAppVue = new Vue({
                 console.log('passwords match!');
                 var thatVm=this;
                 $.post('/api/user', this.signUpForm, function(res) {
-                    if(res) {
+                    if(res.success) {
                         console.log('account created and logged in!');
                         console.log(res);
-                        thatVm.signUpForm.username = '';
-                        thatVm.signUpForm.password = '';
-                        //why is name not blue?
-                        thatVm.signUpForm.name = '';
-                        thatVm.signUpForm.state = '';
-                        thatVm.signUpForm.email = '';
+                        for (var key in thatVm.signUpForm) {
+                            thatVm.signUpForm[key] = '';
+                        }
                         thatVm.signUpForm.agreedToTerms = false;
                         thatVm.passwordChecker = '';
                         thatVm.createAccountClicked = false;
-                        thamVm.loginClicked = false;
+                        thatVm.loginClicked = false;
                         thatVm.loggedIn = true;
                     } else {
                         console.log(res);
@@ -167,16 +151,42 @@ var mainAppVue = new Vue({
         submitNewEquipment: function(event) { 
             event.preventDefault();
             var thatVm = this;
-            $.post('/api/equipments', this.equipmentItem, function(res) {
-                if(res) {
-                    console.log('item created!');
+            var formData = new FormData();
+            for (var key in this.equipmentItem) {
+                formData.append(key, this.equipmentItem[key]);
+            }
+            var fileInputElement = document.getElementById('newEquipmentImage');
+            formData.append("gearImage", fileInputElement.files[0]);
+            $.ajax({
+                url: '/api/itemPhoto',
+                method: 'POST', 
+                contentType: false,
+                processData: false,
+                data: formData, 
+                success: function(res) {
                     console.log(res);
-                    thatVm.equipmentItem = '';
-                } else {
-                    console.log(res);
-                    console.log('item not created');
-                }
+                    console.log('equipment added!');
+                },
             });
+        },
+        //method for reset buttons
+        clearForm: function(event) {
+            event.preventDefault();
+            for (let key in this.signUpForm) {
+                this.signUpForm[key] = '';
+            }
+            for (let key in this.equipmentItem) {
+                if(this.equipmentItem[key] !== this.equipmentItem.pickUpLocation) {
+                    this.equipmentItem[key] = '';
+                }
+            }
+            for (let key in this.equipmentItem.pickUpLocation) {
+                this.equipmentItem.pickUpLocation[key] = '';
+            }
+            
+        },
+        searchNewEquipment: function(event) {
+            event.preventDefault();
         }
     }
 }); 
