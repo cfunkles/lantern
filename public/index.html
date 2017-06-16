@@ -29,6 +29,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">Home</a></li>
                     <li v-if="loggedIn"><a href="#">Profile</a></li>
+                    <li v-if="loggedIn" v-on:click="clickAddItem"><a href="#">Add Item</a></li>
                     <li v-if="!loggedIn" v-on:click="clickCreateAccount"><a href="#">Sign Up</a> </li>
                     <li v-if="!loggedIn" v-on:click="clickLogin"><a href="#">Login</a></li>
                     <li v-on:click="clickNavAbout"><a href="#">About</a></li>
@@ -46,7 +47,7 @@
         </div>
 
         <!--create new item section-->
-        <section v-if="loggedIn" class="container">
+        <section v-if="loggedIn && addGearClicked" class="container">
             <form v-on:submit="submitNewEquipment" class="form-horizontal">
                 <h2 class="col-sm-offset-4">Add Equipment Item!</h2>
                 <div class="form-group">

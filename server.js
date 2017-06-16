@@ -18,10 +18,10 @@ app.use(expressSession({
     saveUninitialized: true
 }));
 //verification function
-function setUpSession(req, data) {
+function setUpSession(req, user) {
     req.session.user = {
-        _id: data._id,
-        username: data.username
+        _id: user._id,
+        username: user.username
     };
 }
 
@@ -67,13 +67,11 @@ app.post('/api/user', function(req, res) {
                     res.send("error");
                     return;
                 }
+                setUpSession(req, req.body);
+                res.send({success:'success'});
+                console.log('account created!');
             });
-            //can't use data as param because it is null, just need to use req.body instead
-            setUpSession(req, req.body);
-            res.send({success:'success'});
-            console.log('account created!');
         } else {
-            //what to do if username exists
             res.send('exists');
             console.log('account exists!');
         }
@@ -95,7 +93,7 @@ app.get('/api/user/:username/:password', function(req, res) {
     });
 });
 
-app.post('/api/itemPhoto', multer({dest: 'public/images'}).single('gearImage'), function(req, res) {
+app.post('/api/equipments', multer({dest: 'public/images'}).single('gearImage'), function(req, res) {
     if(!req.session.user){
         res.status(403);
         res.send('forbidden');
@@ -104,11 +102,16 @@ app.post('/api/itemPhoto', multer({dest: 'public/images'}).single('gearImage'), 
     req.body.imageFileName = req.file.filename;
     req.body.ownerId = req.session.user._id;
     db.collection('equipments').insertOne(req.body, function(err, creationInfo) {
-        
+        if(err) {
+            console.log(err);
+            res.status(500);
+            res.send('error');
+            return;
+        }
+        console.log(req.body);
+        console.log(req.file);
+        res.send({success:'success'});
     });
-    console.log(req.body);
-    console.log(req.file);
-    res.send('I got it!');
 });
 
 app.use(express.static('public'));

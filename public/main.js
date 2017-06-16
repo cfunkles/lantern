@@ -55,6 +55,7 @@ var mainAppVue = new Vue({
         createAccountClicked: false,
         aboutClicked: false,
         storyClicked: false,
+        addGearClicked: false,
     },
 
 
@@ -104,9 +105,15 @@ var mainAppVue = new Vue({
             }
             this.storyClicked = true;
         },
+        clickAddItem: function() {
+            if(this.addGearClicked) {
+                this.addGearClicked = false;
+                return;
+            }
+            this.addGearClicked = true;
+        },
 
 
-        //submits new user form. update error handeling stuff still
         submitNewAccount: function(event) {
             event.preventDefault();
             if(this.matchPasswords) {
@@ -153,22 +160,33 @@ var mainAppVue = new Vue({
             var thatVm = this;
             var formData = new FormData();
             for (var key in this.equipmentItem) {
-                formData.append(key, this.equipmentItem[key]);
+                if(this.equipmentItem[key] === this.equipmentItem.pickUpLocation) {
+                    for (let key in this.equipmentItem.pickUpLocation) {
+                        formData.append(key, this.equipmentItem.pickUpLocation[key]);
+                    } 
+                } else {
+                    formData.append(key, this.equipmentItem[key]);
+                }
             }
             var fileInputElement = document.getElementById('newEquipmentImage');
             formData.append("gearImage", fileInputElement.files[0]);
             $.ajax({
-                url: '/api/itemPhoto',
+                url: '/api/equipments',
                 method: 'POST', 
                 contentType: false,
                 processData: false,
                 data: formData, 
                 success: function(res) {
-                    console.log(res);
-                    console.log('equipment added!');
+                    if(res.success) {
+                        thatVm.clearForm(event);
+                        thatVm.addGearClicked = false;
+                        console.log(res);
+                    }
                 },
             });
         },
+
+
         //method for reset buttons
         clearForm: function(event) {
             event.preventDefault();
@@ -176,15 +194,18 @@ var mainAppVue = new Vue({
                 this.signUpForm[key] = '';
             }
             for (let key in this.equipmentItem) {
-                if(this.equipmentItem[key] !== this.equipmentItem.pickUpLocation) {
+                if(this.equipmentItem[key] === this.equipmentItem.pickUpLocation) {
+                    for (let key in this.equipmentItem.pickUpLocation) {
+                        this.equipmentItem.pickUpLocation[key] = '';
+                    }
+                } else {
                     this.equipmentItem[key] = '';
                 }
             }
-            for (let key in this.equipmentItem.pickUpLocation) {
-                this.equipmentItem.pickUpLocation[key] = '';
-            }
-            
         },
+
+
+        
         searchNewEquipment: function(event) {
             event.preventDefault();
         }
