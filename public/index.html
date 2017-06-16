@@ -46,6 +46,22 @@
             </div>
         </div>
 
+        <section class="container" v-if="loggedIn">
+            <div class="center" v-if="userInfo.equipmentItems.length === 0">
+                <h2>No Items Yet!</h2>
+                <button v-on:click="clickAddItem" class="btn btn-primary">Add item!</button>
+            </div>
+            <div class="center row" v-if="userInfo.equipmentItems.length > 0">
+                <h2>Items you are sharing</h2>
+                <equipment-item 
+                    v-for="item in userInfo.equipmentItems" 
+                    v-bind:item="item"
+                    :key="item._id"
+                    class="col-sm-4"
+                    ></equipment-item>
+            </div>
+        </section>
+
         <!--create new item section-->
         <section v-if="loggedIn && addGearClicked" class="container">
             <form v-on:submit="submitNewEquipment" class="form-horizontal">

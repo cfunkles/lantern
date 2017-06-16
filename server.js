@@ -17,6 +17,8 @@ app.use(expressSession({
     resave: false,
     saveUninitialized: true
 }));
+
+
 //verification function
 function setUpSession(req, user) {
     req.session.user = {
@@ -38,8 +40,8 @@ mongodb.MongoClient.connect("mongodb://localhost", function(err, database) {
     startListening();
 });
 
-//register new user
-app.post('/api/user', function(req, res) {
+//register new user route
+app.post('/api/user/registration', function(req, res) {
     //validates form entries
     //add this validation check later
     // if(req.body.password.length < 10) {
@@ -60,6 +62,9 @@ app.post('/api/user', function(req, res) {
     }, function(err, user) {
         if (user === null) {
             //creates user only if it doesn't exist
+            req.body.equipmentItems = [];
+            req.body.ratings = '';
+            req.body.canSetUpGear = false;
             db.collection('users').insertOne(req.body, function(err, creationInfo) {
                 if (err) {
                     console.log(err);
@@ -78,11 +83,29 @@ app.post('/api/user', function(req, res) {
     });
 });
 
-app.get('/api/user/:username/:password', function(req, res) {
+//request for user information
+app.get('/api/user', function(req, res) {
+    if(!req.session.user){
+        res.status(403);
+        res.send('forbidden');
+        return;
+    }
     db.collection('users').findOne({
-        username: req.params.username,
-        password: req.params.password
+        username: req.session.user.username
     }, function(err, user) {
+        if(err) {
+            console.log(err);
+            res.status(500);
+            res.send('error');
+            return;
+        }
+        res.send(user);
+    });
+});
+
+//login route
+app.post('/api/user/login', function(req, res) {
+    db.collection('users').findOne(req.body, function(err, user) {
         if(user === null) {
             res.send('login error');
             return;
@@ -93,6 +116,7 @@ app.get('/api/user/:username/:password', function(req, res) {
     });
 });
 
+//new item route
 app.post('/api/equipments', multer({dest: 'public/images'}).single('gearImage'), function(req, res) {
     if(!req.session.user){
         res.status(403);
@@ -111,6 +135,27 @@ app.post('/api/equipments', multer({dest: 'public/images'}).single('gearImage'),
         console.log(req.body);
         console.log(req.file);
         res.send({success:'success'});
+    });
+});
+
+app.get('/api/equipment', function(req, res) {
+    if(!req.session.user){
+        res.status(403);
+        res.send('forbidden');
+        return;
+    }
+    db.collection('equipments').find({
+        ownerId: req.session.user._id
+    }).toArray(function(err, itemsArray) {
+        console.log('err', err);
+        
+        if(err) {
+            res.status(500);
+            res.send('error');
+            return;
+        }
+        console.log('items', itemsArray);
+        res.send(itemsArray);
     });
 });
 

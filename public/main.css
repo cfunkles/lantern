@@ -52,6 +52,16 @@ p {
     font-size: 16px;
 }
 
+.itemComponent {
+    width: 50%;
+    
+}
+
+.equipmentImage {
+    height: 100px;
+    width: 100px;
+}
+
 section {
     margin-bottom: 80px;
     padding: 50px;

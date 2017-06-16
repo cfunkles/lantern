@@ -21,11 +21,9 @@ var mainAppVue = new Vue({
             name: '',
             state: '',
             email: '',
-            numberOfPieces: '',
             equipmentItems: [],//an array of objects with one property being a boolean value of item checked out.
             rentedItems: [],
-            sharerRating: '',
-            explorerReviews: [],
+            ratings: '',
             canSetUpGear: false,
         },
 
@@ -51,6 +49,7 @@ var mainAppVue = new Vue({
 
         //for click listeners
         loggedIn: false,
+        hasUserInfo: false,
         loginClicked: false,
         createAccountClicked: false,
         aboutClicked: false,
@@ -113,16 +112,15 @@ var mainAppVue = new Vue({
             this.addGearClicked = true;
         },
 
-
         submitNewAccount: function(event) {
             event.preventDefault();
             if(this.matchPasswords) {
                 console.log('passwords match!');
                 var thatVm=this;
-                $.post('/api/user', this.signUpForm, function(res) {
+                $.post('/api/user/registration', this.signUpForm, function(res) {
                     if(res.success) {
                         console.log('account created and logged in!');
-                        console.log(res);
+                        thatVm.getUserInfo();
                         for (var key in thatVm.signUpForm) {
                             thatVm.signUpForm[key] = '';
                         }
@@ -132,6 +130,7 @@ var mainAppVue = new Vue({
                         thatVm.loginClicked = false;
                         thatVm.loggedIn = true;
                     } else {
+                        //to do, make more dynamic controls for this response
                         console.log(res);
                     }
                 });
@@ -139,10 +138,34 @@ var mainAppVue = new Vue({
                 console.log('passwords don\'t match');
             }
         },
+
+        setUserInfo: function(user) {
+            for (let key in user) {
+                this.userInfo[key] = user[key];
+            }
+            this.getEquipmentItemsForUser();
+        },
+
+        getUserInfo: function() {
+            thatVm = this;
+            $.get('api/user', function(user) {
+                thatVm.setUserInfo(user);
+                console.log('userInfo', thatVm.userInfo);
+            });
+        },
+
+        getEquipmentItemsForUser: function() {
+            thatVm = this;
+            $.get('/api/equipment', function(itemsArray) {
+                thatVm.userInfo.equipmentItems = itemsArray;
+                console.log('userInfo with itemsArray', thatVm.userInfo.equipmentItems);
+            });
+        },
+
         submitLogin: function(event) {
             event.preventDefault();
             var thatVm = this;
-            $.get('/api/user/' + this.loginForm.username + '/' + this.loginForm.password, function(user) {
+            $.post('/api/user/login', this.loginForm, function(user) {
                 if (user === 'login error') {
                     console.log('error logging in!');
                 } else {
@@ -151,15 +174,18 @@ var mainAppVue = new Vue({
                     thatVm.loginClicked = false;
                     thatVm.createAccountClicked = false;
                     thatVm.loggedIn = true;
-                    console.log(user);
+                    thatVm.setUserInfo(user);
+                    console.log('userInfo', thatVm.userInfo);
                 }
             });
         },
+
         submitNewEquipment: function(event) { 
             event.preventDefault();
             var thatVm = this;
             var formData = new FormData();
             for (var key in this.equipmentItem) {
+                //this doesn't send the adress as an object
                 if(this.equipmentItem[key] === this.equipmentItem.pickUpLocation) {
                     for (let key in this.equipmentItem.pickUpLocation) {
                         formData.append(key, this.equipmentItem.pickUpLocation[key]);
@@ -178,6 +204,7 @@ var mainAppVue = new Vue({
                 data: formData, 
                 success: function(res) {
                     if(res.success) {
+                        thatVm.getEquipmentItemsForUser();
                         thatVm.clearForm(event);
                         thatVm.addGearClicked = false;
                         console.log(res);
@@ -203,11 +230,33 @@ var mainAppVue = new Vue({
                 }
             }
         },
-
-
-        
-        searchNewEquipment: function(event) {
-            event.preventDefault();
-        }
     }
 }); 
+
+Vue.component('equipment-item', {
+    template: `
+        <div class="well itemComponent">
+            <h3 class="center">{{item.brand}} {{item.name}} {{item.category}}</h3>
+            <h3>Model: {{item.model}} Size: {{item.size}} in: {{item.condition}} condition</h3>
+            <img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment">
+            <p>{{item.description}}</p>
+            <p>
+                {{item.address}}<br>
+                {{item.city}}<br>
+                {{item.state}}<br>
+                {{item.zip}}
+            </p>
+        </div>
+    `,
+    props : ['item'],
+    data: function(){
+        // we use a function for data on components so that each component gets unique data, not references to each other's data
+        return {};
+    },
+    computed:{
+
+    },
+    methods:{
+
+    },
+});
