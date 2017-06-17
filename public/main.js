@@ -1,6 +1,7 @@
 var mainAppVue = new Vue({
     el: '#app',
     data: {
+        searchCity: '',
         signUpForm: {
             username: '',
             password: '',
@@ -21,7 +22,6 @@ var mainAppVue = new Vue({
             name: '',
             state: '',
             email: '',
-            equipmentItems: [],//an array of objects with one property being a boolean value of item checked out.
             rentedItems: [],
             ratings: '',
             canSetUpGear: false,
@@ -46,16 +46,17 @@ var mainAppVue = new Vue({
             ownerId: '',
             imageFileName: '',
         },
-
+        //change this depending what items user wants to see.
+        equipmentArray: [],
         //for click listeners
         loggedIn: false,
-        hasUserInfo: false,
         loginClicked: false,
         createAccountClicked: false,
         aboutClicked: false,
         storyClicked: false,
         addGearClicked: false,
         profileClicked: false,
+        searchMade: false,
     },
 
 
@@ -124,12 +125,14 @@ var mainAppVue = new Vue({
             this.createAccountClicked = false;
             this.aboutClicked = false;
             this.storyClicked = false;
+            this.searchMade = false;
         },
         clickHomeLoggedIn: function() {
             this.aboutClicked = false;
             this.storyClicked = false;
             this.addGearClicked = false;
             this.profileClicked = false;
+            this.searchMade = false;
         },
 
         submitNewAccount: function(event) {
@@ -159,28 +162,19 @@ var mainAppVue = new Vue({
             }
         },
 
+        getUserInfo: function() {
+            thatVm = this;
+            $.get('api/user', function(user) {
+                setUserInfo(user);
+            });
+        },
+
         setUserInfo: function(user) {
             for (let key in user) {
                 this.userInfo[key] = user[key];
             }
-            this.getEquipmentItemsForUser();
         },
 
-        getUserInfo: function() {
-            thatVm = this;
-            $.get('api/user', function(user) {
-                thatVm.setUserInfo(user);
-                console.log('userInfo', thatVm.userInfo);
-            });
-        },
-
-        getEquipmentItemsForUser: function() {
-            thatVm = this;
-            $.get('/api/equipment', function(itemsArray) {
-                thatVm.userInfo.equipmentItems = itemsArray;
-                console.log('userInfo with itemsArray', thatVm.userInfo.equipmentItems);
-            });
-        },
 
         submitLogin: function(event) {
             event.preventDefault();
@@ -195,8 +189,15 @@ var mainAppVue = new Vue({
                     thatVm.createAccountClicked = false;
                     thatVm.loggedIn = true;
                     thatVm.setUserInfo(user);
-                    console.log('userInfo', thatVm.userInfo);
+                    thatVm.getEquipmentItemsForUser();
                 }
+            });
+        },
+
+        getEquipmentItemsForUser: function() {
+            thatVm = this;
+            $.get('/api/equipments', function(itemsArray) {
+                thatVm.equipmentArray = itemsArray;
             });
         },
 
@@ -227,10 +228,25 @@ var mainAppVue = new Vue({
                         thatVm.getEquipmentItemsForUser();
                         thatVm.clearForm(event);
                         thatVm.addGearClicked = false;
-                        console.log(res);
                     }
+                    console.log('no success creating new item');
                 },
             });
+        },
+
+        submitSearch: function() {
+            thatVm = this;
+            if (!this.searchCity) {
+                $.get('/api/equipments/all', function(allArray) {
+                    thatVm.equipmentArray = allArray;
+                    thatVm.searchMade = true;
+                });
+            } else {
+                $.get('/api/equipments/' + this.searchCity, function(searchArray) {
+                    thatVm.equipmentArray = searchArray;
+                    thatVm.searchMade = true;
+                });
+            }
         },
 
 

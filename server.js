@@ -138,7 +138,8 @@ app.post('/api/equipments', multer({dest: 'public/images'}).single('gearImage'),
     });
 });
 
-app.get('/api/equipment', function(req, res) {
+//search database for items per user
+app.get('/api/equipments', function(req, res) {
     if(!req.session.user){
         res.status(403);
         res.send('forbidden');
@@ -154,9 +155,36 @@ app.get('/api/equipment', function(req, res) {
             res.send('error');
             return;
         }
-        console.log('items', itemsArray);
         res.send(itemsArray);
     });
+});
+
+//search database by city name. To Do handel title case manipulations
+app.get('/api/equipments/:city', function(req, res) {
+    //send whole database on empty query
+    if(req.params.city === 'all') {
+        db.collection('equipments').find().toArray(function(err, allArray) {
+            if(err) {
+                console.log(err);
+                res.status(500);
+                res.send('error');
+                return;
+            }
+            res.send(allArray);
+        });
+    } else {
+        db.collection('equipments').find({
+            city: req.params.city
+        }).toArray(function(err, searchArray) {
+            if(err) {
+                console.log(err);
+                res.status(500);
+                res.send('error');
+                return;
+            }
+            res.send(searchArray);
+        });
+    }
 });
 
 app.use(express.static('public'));

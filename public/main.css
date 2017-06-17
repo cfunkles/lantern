@@ -28,14 +28,17 @@
     text-align: center;
 }
 
-.mainSearch {
+.citySearch {
     position: absolute;
-    left: 41%;
+    left: 40%;
     top: 210px;
-    height: 40px;
-    width: 250px;
     text-align: center;
     color: midnightblue;
+}
+
+.citySearch input {
+    height: 40px;
+    width: 250px;
 }
 
 #app {

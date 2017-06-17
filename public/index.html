@@ -39,12 +39,34 @@
         </nav>
 
         <!--pretty picture and search section-->
-        <div class="logo" v-if="!profileClicked && !loginClicked && !createAccountClicked && !aboutClicked && !storyClicked">
+        <div class="logo" v-if="!profileClicked && !loginClicked && !createAccountClicked && !aboutClicked && !storyClicked && !searchMade">
             <img src="lanternFullLogo.png" alt="lantern logo">
-            <div class="center">
-                <input class="mainSearch" type="text" placeholder="Search Location">
+            <div class="center citySearch">
+                <input v-model="searchCity" type="text" placeholder="Search by City">
+                <button class="btn btn-info" v-on:click="submitSearch">Search</button>
             </div>
         </div>
+        
+        <br>
+        <br>
+        <section class="container" v-if="searchMade">
+            <div class="center" v-if="equipmentArray.length === 0">
+                <h2>No Results!</h2>
+                <input v-model="searchCity" type="text" placeholder="Search by City">
+                <button class="btn btn-info" v-on:click="submitSearch">Search</button>
+            </div>
+            <div class="center row" v-if="equipmentArray.length > 0">
+                <h2>Results!</h2>
+                <equipment-item 
+                    v-for="item in equipmentArray" 
+                    v-bind:item="item"
+                    :key="item._id"
+                    class="col-sm-4"
+                    ></equipment-item>
+                <input v-model="searchCity" type="text" placeholder="Search by City">
+                <button class="btn btn-info" v-on:click="submitSearch">Search</button>
+            </div>
+        </section>
 
         <!--Registration form. Adds info data to sign up form. All fields required, and terms is a checkbox-->
         <form v-if="createAccountClicked" v-on:submit="submitNewAccount" class="form-horizontal">
@@ -188,14 +210,14 @@
 
 
         <section class="container" v-if="loggedIn && profileClicked">
-            <div class="center" v-if="userInfo.equipmentItems.length === 0">
+            <div class="center" v-if="equipmentArray.length === 0">
                 <h2>No Items Yet!</h2>
                 <button v-on:click="clickAddItem" class="btn btn-primary">Add item!</button>
             </div>
-            <div class="center row" v-if="userInfo.equipmentItems.length > 0">
+            <div class="center row" v-if="equipmentArray.length > 0">
                 <h2>Items you are sharing</h2>
                 <equipment-item 
-                    v-for="item in userInfo.equipmentItems" 
+                    v-for="item in equipmentArray" 
                     v-bind:item="item"
                     :key="item._id"
                     class="col-sm-4"
