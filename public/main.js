@@ -55,6 +55,7 @@ var mainAppVue = new Vue({
         aboutClicked: false,
         storyClicked: false,
         addGearClicked: false,
+        profileClicked: false,
     },
 
 
@@ -110,6 +111,25 @@ var mainAppVue = new Vue({
                 return;
             }
             this.addGearClicked = true;
+        },
+        clickSeeProfile: function() {
+            if(this.profileClicked) {
+                this.profileClicked = false;
+                return;
+            }
+            this.profileClicked= true;
+        },
+        clickHome: function() {
+            this.loginClicked = false;
+            this.createAccountClicked = false;
+            this.aboutClicked = false;
+            this.storyClicked = false;
+        },
+        clickHomeLoggedIn: function() {
+            this.aboutClicked = false;
+            this.storyClicked = false;
+            this.addGearClicked = false;
+            this.profileClicked = false;
         },
 
         submitNewAccount: function(event) {
