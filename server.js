@@ -63,7 +63,6 @@ app.post('/api/user/registration', function(req, res) {
         if (user === null) {
             //creates user only if it doesn't exist
             req.body.ratings = '';
-            req.body.canSetUpGear = false;
             db.collection('users').insertOne(req.body, function(err, creationInfo) {
                 if (err) {
                     console.log(err);
@@ -256,6 +255,32 @@ app.post('/api/equipments/dates', function(req, res) {
             res.send({success:'success'});
         });
     });
+});
+
+app.post('/api/users/message', function(req, res) {
+    if(!req.session.user){
+        res.status(403);
+        res.send('forbidden');
+        return;
+    }
+    if(!req.body.message) {
+        res.send('empty');
+        return;
+    }
+    console.log('your message', req.body);
+    db.collection('users').insertOne({
+        ObjectID: ObjectID(req.body.owernId)},
+        {$push: {messages: {sender: req.session.user._id, message: req.body.message}}}, 
+        function(err, updateStatus) {
+            if (err) {
+                console.log(err);
+                res.status(500);
+                res.send('error');
+                return;
+            }
+            console.log('message added!');
+            res.send({success:'success'});
+        });
 });
 
 app.use(express.static('public'));

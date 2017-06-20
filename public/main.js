@@ -8,16 +8,20 @@ var mainAppVue = new Vue({
             name: '',
             state: '',
             email: '',
+            canSetUpGear: false,
             agreedToTerms: false,
         },
 
+
         passwordChecker: '',
+
 
         loginForm: {
             username: '',
             password: '',
         },
 
+        //info grabbed users objectID uppon login
         userInfo: {
             username: '',
             name: '',
@@ -25,8 +29,10 @@ var mainAppVue = new Vue({
             email: '',
             ratings: '',
             canSetUpGear: false,
+            messages: [],
         },
 
+        //used for keeping info that gets submitted to database uppon creation
         equipmentItem: {
             name: '',
             brand: '',
@@ -42,12 +48,17 @@ var mainAppVue = new Vue({
                 zip:  '',
             },
             usersRenting: [{userId: 'userId', date: 'date'}],
+            canSetUpGear: false,
             gearReview: [],//going to fill this array with objects the have rating number and comments
             ownerId: '',
             imageFileName: '',
         },
+
+
         //change this depending what items user wants to see.
         equipmentArray: [],
+
+
         //for click listeners
         loggedIn: false,
         loginClicked: false,
@@ -66,9 +77,9 @@ var mainAppVue = new Vue({
     computed: {
         //checks two password inputs for equalness. returns boolean when evaluated
         matchPasswords: function() {
-            if(this.signUpForm.password === this.signUpForm.passwordChecker) {
+            if(this.signUpForm.password === this.passwordChecker) {
                 //add this feature later
-                // if(password.length > 10) {
+                // if(password.length > 7) {
                 //     return true;
                 // }
                 return true;
@@ -195,12 +206,15 @@ var mainAppVue = new Vue({
             this.searchMade = false;
         },
 
+
+        //Function for new users who sign up
         submitNewAccount: function(event) {
             event.preventDefault();
             if(this.matchPasswords) {
                 console.log('passwords match!');
                 var thatVm=this;
                 //why is the password checker being injected into the signUpForm?
+                console.log(this.signUpForm);
                 $.post('/api/user/registration', this.signUpForm, function(res) {
                     if(res.success) {
                         console.log('account created and logged in!');
@@ -208,6 +222,7 @@ var mainAppVue = new Vue({
                         for (var key in thatVm.signUpForm) {
                             thatVm.signUpForm[key] = '';
                         }
+                        thatVm.signUpForm.canSetUpGear = false;
                         thatVm.signUpForm.agreedToTerms = false;
                         thatVm.passwordChecker = '';
                         thatVm.createAccountClicked = false;
@@ -224,6 +239,8 @@ var mainAppVue = new Vue({
             }
         },
 
+
+        //runs when user registers
         getUserInfo: function() {
             var thatVm = this;
             $.get('/api/user', function(user) {
@@ -231,12 +248,14 @@ var mainAppVue = new Vue({
             });
         },
 
+        //runs when user logs in and registers
         setUserInfo: function(user) {
             for (let key in user) {
                 this.userInfo[key] = user[key];
             }
         },
 
+        //run when clicking submit on log in form
         submitLogin: function(event) {
             event.preventDefault();
             var thatVm = this;
@@ -256,6 +275,7 @@ var mainAppVue = new Vue({
             });
         },
 
+        //runs when clicking shared items button
         getOwnedItems: function() {
             thatVm = this;
             $.get('/api/equipments/userowned', function(itemsArray) {
@@ -263,6 +283,7 @@ var mainAppVue = new Vue({
             });
         },
 
+        //runs when clicking rented items button
         getRentedItems: function() {
             thatVm = this;
             $.get('/api/equipments/usercheckouts', function(itemsArray) {
@@ -270,9 +291,11 @@ var mainAppVue = new Vue({
             });
         },
 
+        //runs on submit of new item submission
         submitNewEquipment: function(event) { 
             event.preventDefault();
             var thatVm = this;
+            this.equipmentItem.canSetUpGear = this.userInfo.canSetUpGear;
             var formData = new FormData();
             for (var key in this.equipmentItem) {
                 //this doesn't send the adress as an object
@@ -304,8 +327,10 @@ var mainAppVue = new Vue({
             });
         },
 
+        //runs when submit selected
         submitSearch: function() {
             thatVm = this;
+            //for no inputing search string
             if (!this.searchCity) {
                 $.get('/api/equipments/all', function(allArray) {
                     thatVm.equipmentArray = allArray;
@@ -313,6 +338,7 @@ var mainAppVue = new Vue({
                     thatVm.home = false;
                 });
             } else {
+                //for searching anything else typed in input
                 $.get('/api/equipments/' + this.searchCity, function(searchArray) {
                     thatVm.equipmentArray = searchArray;
                     thatVm.searchMade = true;
@@ -324,11 +350,20 @@ var mainAppVue = new Vue({
         //method for reset buttons
         clearForm: function(event) {
             event.preventDefault();
+            //clears the signUpForm
             for (let key in this.signUpForm) {
-                this.signUpForm[key] = '';
+                if(this.signUpForm[key] === this.signUpForm.canSetUpGear) {
+                    this.signUpForm.canSetUpGear = false;
+                } else {
+                    this.signUpForm[key] = '';
+                }
             }
+            //clears the equipment form
             for (let key in this.equipmentItem) {
-                if(this.equipmentItem[key] === this.equipmentItem.pickUpLocation) {
+                var g;
+                if (this.equipmentItem[key] === this.equipmentItem.canSetUpGear) {
+                    g = 'this is the easter egg!, Congrats on finding it!';
+                } else if (this.equipmentItem[key] === this.equipmentItem.pickUpLocation) {
                     for (let key in this.equipmentItem.pickUpLocation) {
                         this.equipmentItem.pickUpLocation[key] = '';
                     }
@@ -351,6 +386,7 @@ Vue.component('search-item', {
             <p>Size: {{item.size}}</p>
             <p>Category: {{item.category}}</p>
             <p>Description from the Sharer: {{item.description}}</p>
+            <p v-if="item.canSetUpGear === 'true'">This user would be happy to set up your gear, Contact them to set up details</p>
             <p> Location of Item: </p>
             <ul class="address">
                 <li>{{item.address}}</li>
@@ -364,6 +400,8 @@ Vue.component('search-item', {
             <p v-if="availible">Item availible</p>
             <p v-if="notAvailible">Item not Availible</p>
             <p v-if="rented">Success! Item was checked out for {{selectedDate}}</p>
+            <input v-if="item.canSetUpGear === 'true' && rented" v-model="setupmessage" type='text' placeholder="setup message">
+            <button v-if="rented && item.canSetUpGear === 'true'" class="btn btn-success" v-on:click="sendmessage">Send messages</button>
             <p v-if="empty">Nothing Selected! Enter Date</p>
         </div>
     `,
@@ -377,6 +415,7 @@ Vue.component('search-item', {
             rented: false,
             //to do find way to not show rented when date has changed
             empty: false,
+            setupmessage: '',
         };
     },
     computed:{
@@ -434,6 +473,13 @@ Vue.component('search-item', {
                 thatVm.availible = false;
             });
         },
+
+        sendmessage: function() {
+            thatVm = this;
+            $.post('/api/users/message', {message: this.setupmessage, owner: this.item.ownerId}, function(confirmation) {
+                alert('message sent!');
+            });
+        }
     },
 });
 
@@ -442,6 +488,7 @@ Vue.component('owned-item', {
         <div class="well myOwnedItem">
             <h3 class="center">Sharing: {{item.name}} {{item.brand}} {{item.model}}</h3>
             <p><img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment"> </p>
+            <p v-if="item.canSetUpGear"> Your are willing to set up this item for the explorer!</p>
             <p v-if="editClicked">Condition: {{item.condition}}</p>
             <p v-if="editClicked">Size: {{item.size}}</p>
             <p v-if="editClicked">Category: {{item.category}}</p>
@@ -522,12 +569,14 @@ Vue.component('owned-item', {
                     thatVm.rented = false;
                     return;
                 }
+                //item was checked out
                 if(confirmation.success) {
                     thatVm.rented = true;
                     thatVm.notAvailible = false;
                     thatVm.empty = false;
                     return;
                 }
+                //date input was empty
                 thatVm.empty = true;
                 thatVm.rented = false;
                 thatVm.notAvailible = false;
@@ -535,6 +584,7 @@ Vue.component('owned-item', {
             });
         },
 
+        //feature for 2.0
         clickEdit: function() {
             if(this.editClicked) {
                 this.editClicked = false;
@@ -543,6 +593,7 @@ Vue.component('owned-item', {
             this.editClicked = true;
         },
 
+        //this button is for the sharer to beable to checkout their own items
         clickCheckout: function() {
             if(this.checkoutClicked) {
                 this.checkoutClicked = false;
@@ -574,6 +625,7 @@ Vue.component('rented-item', {
                 <li>{{item.state}}</li>
                 <li>{{item.zip}}</li>
             </ul>
+            <p v-if="item.canSetUpGear">You can contact the Sharer to get this item set up!</p>
         </div>
     `,
     props : ['item', 'userid'],

@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="main.css">
-    <script src="https://unpkg.com/vue"></script>
     <script
         src="https://code.jquery.com/jquery-3.2.1.min.js"
         integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
         crossorigin="anonymous">
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="main.css">
+    <script src="https://unpkg.com/vue"></script>
     <title>Share the Outdoors, Explore the Outdoors</title>
 </head>
 <body>
@@ -28,9 +29,14 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li v-if="loggedIn" v-on:click="clickHomeLoggedIn"><a href="#">Home</a></li>
                     <li v-if="!loggedIn" v-on:click="clickHome"><a href="#">Home</a></li>
-                    <li v-if="loggedIn" v-on:click="clickOwned"><a href="#">Shared Items</a></li>
-                    <li v-if="loggedIn" v-on:click="clickRented"><a href="#">Rented Items</a></li>
-                    <li v-if="loggedIn" v-on:click="clickAddItem"><a href="#">Add Item</a></li>
+                    <li v-if="loggedIn" class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="dropdownMenu1" role="button" aria-haspopup="true" aria-expanded="false">Profile <span class="caret"></span></a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li v-if="loggedIn"  v-on:click="clickOwned"><a href="#">Shared Items</a></li>
+                            <li v-if="loggedIn" v-on:click="clickRented"><a href="#">Rented Items</a></li>
+                            <li v-if="loggedIn" v-on:click="clickAddItem"><a href="#">Add Item</a></li>
+                        </ul>
+                    </li>
                     <li v-if="!loggedIn" v-on:click="clickCreateAccount"><a href="#">Sign Up</a> </li>
                     <li v-if="!loggedIn" v-on:click="clickLogin"><a href="#">Login</a></li>
                     <li v-on:click="clickNavAbout"><a href="#">About</a></li>
@@ -91,7 +97,7 @@
             <div class="form-group {has-success: matchPasswords">
                 <label class="control-label  col-sm-offset-4 col-sm-2" for="passwordChecker">re-enter password: </label>
                 <div class="col-sm-2">
-                    <input v-model="signUpForm.passwordChecker" class="form-control" type="password" placeholder="Ex@mp19P@ssw0rD" id="paswordChecker" required>
+                    <input v-model="passwordChecker" class="form-control" type="password" placeholder="Ex@mp19P@ssw0rD" id="paswordChecker" required>
                 </div>
             </div>
             <div class="form-group">
@@ -163,6 +169,15 @@
                 <label class="control-label col-sm-offset-4 col-sm-2" for="email">Email: </label>
                 <div class="col-sm-2">
                     <input v-model="signUpForm.email" class="form-control" type="email" placeholder="chad@awesome.com" id="email" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label class="control-label col-sm-offset-4 col-sm-4" for="makeCamp">
+                        <input v-model="signUpForm.canSetUpGear" type="checkbox" id="makeCamp">
+                        Are You Willing to set Up Campsite for user?
+                        <a href="#">View More Information</a>
+                    </label>
                 </div>
             </div>
             <div class="form-group">
