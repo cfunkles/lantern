@@ -39,7 +39,7 @@
         </nav>
 
         <!--pretty picture and search section-->
-        <div class="logo" v-if="!profileClicked && !loginClicked && !createAccountClicked && !aboutClicked && !storyClicked && !searchMade">
+        <div class="logo" v-if="home">
             <img src="lanternFullLogo.png" alt="lantern logo">
             <div class="center citySearch">
                 <input v-model="searchCity" type="text" placeholder="Search by City">
@@ -328,7 +328,7 @@
         </section>
 
         <!--Sign up instructions-->
-        <section v-if="!aboutClicked && !storyClicked" class="container center">
+        <section v-if="home" class="container center">
             <div class="row">
                 <h2 class="col-sm-offset-3 col-sm-6">How to get started</h2>
             </div>

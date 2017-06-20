@@ -57,6 +57,7 @@ var mainAppVue = new Vue({
         storyClicked: false,
         addGearClicked: false,
         profileClicked: false,
+        home: true,
         searchMade: false,
     },
 
@@ -81,47 +82,78 @@ var mainAppVue = new Vue({
         //click listeners
         clickLogin: function() {
             if(this.loginClicked) {
-                this.loginClicked = false;
+                this.clickHome();
                 return;
             }
             this.loginClicked = true;
+            this.aboutClicked = false;
+            this.storyClicked = false;
+            this.createAccountClicked = false;
+            this.home = false;
         },
         clickCreateAccount: function() {
             if(this.createAccountClicked) {
-                this.createAccountClicked = false;
+                this.clickHome();
                 return;
             }
             this.createAccountClicked = true;
+            this.loginClicked = false;
+            this.aboutClicked = false;
+            this.storyClicked = false;
+            this.home = false;
         },
         clickNavAbout: function() {
             if(this.aboutClicked) {
-                this.aboutClicked = false;
+                this.clickHome();
+                this.clickHomeLoggedIn();
                 return;
             }
             this.aboutClicked = true;
+            this.storyClicked = false;
+            this.addGearClicked = false;
+            this.profileClicked = false;
+            this.loginClicked = false;
+            this.createAccountClicked = false;
+            this.home = false;
         },
         clickNavStory: function() {
             if(this.storyClicked) {
-                this.storyClicked = false;
+                this.clickHome();
+                this.clickHomeLoggedIn();
                 return;
             }
             this.storyClicked = true;
+            this.aboutClicked = false;
+            this.profileClicked = false;
+            this.addGearClicked =false;
+            this.loginClicked = false;
+            this.createAccountClicked = false;
+            this.home = false;
         },
         clickAddItem: function() {
             if(this.addGearClicked) {
-                this.addGearClicked = false;
+                this.clickHomeLoggedIn();
                 return;
             }
             this.addGearClicked = true;
+            this.storyClicked = false;
+            this.aboutClicked = false;
+            this.profileClicked = false;
+            this.home = false;
         },
         clickSeeProfile: function() {
             if(this.profileClicked) {
-                this.profileClicked = false;
+                this.clickHomeLoggedIn();
                 return;
             }
             this.profileClicked= true;
+            this.addGearClicked = false;
+            this.storyClicked = false;
+            this.aboutClicked = false;
+            this.home = false;
         },
         clickHome: function() {
+            this.home = true;
             this.loginClicked = false;
             this.createAccountClicked = false;
             this.aboutClicked = false;
@@ -129,6 +161,7 @@ var mainAppVue = new Vue({
             this.searchMade = false;
         },
         clickHomeLoggedIn: function() {
+            this.home = true;
             this.aboutClicked = false;
             this.storyClicked = false;
             this.addGearClicked = false;
@@ -153,6 +186,7 @@ var mainAppVue = new Vue({
                         thatVm.createAccountClicked = false;
                         thatVm.loginClicked = false;
                         thatVm.loggedIn = true;
+                        thatV.home = true;
                     } else {
                         //to do, make more dynamic controls for this response
                         console.log(res);
@@ -189,6 +223,7 @@ var mainAppVue = new Vue({
                     thatVm.loginClicked = false;
                     thatVm.createAccountClicked = false;
                     thatVm.loggedIn = true;
+                    thatVm.home = true;
                     thatVm.setUserInfo(user);
                     thatVm.getEquipmentItemsForUser();
                 }
@@ -241,11 +276,13 @@ var mainAppVue = new Vue({
                 $.get('/api/equipments/all', function(allArray) {
                     thatVm.equipmentArray = allArray;
                     thatVm.searchMade = true;
+                    thatVm.home = false;
                 });
             } else {
                 $.get('/api/equipments/' + this.searchCity, function(searchArray) {
                     thatVm.equipmentArray = searchArray;
                     thatVm.searchMade = true;
+                    thatVm.home = false;
                 });
             }
         },
