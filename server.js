@@ -300,7 +300,7 @@ app.use(function(err, req, res, next){
 
 //starts server after database connection
 function startListening() {
-    app.listen(8080, function() {
-        console.log('Server Started http://localhost:8080 Let\'s get camping!');
+    app.listen(80, function() {
+        console.log('Server Started http://localhost:80 Let\'s get camping!');
     });
 }
