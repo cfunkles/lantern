@@ -29,6 +29,7 @@ function setUpSession(req, user) {
 
 //mongo database
 var mongodb = require('mongodb');
+var ObjectID = mongodb.ObjectID;
 var db;
 mongodb.MongoClient.connect("mongodb://localhost", function(err, database) {
     if(err) {
@@ -185,6 +186,64 @@ app.get('/api/equipments/:city', function(req, res) {
             res.send(searchArray);
         });
     }
+});
+
+//search item availibility
+app.get('/api/equipments/dates/:_id', function(req, res) {
+    console.log(req.params._id);
+    db.collection('equipments').findOne({_id: ObjectID(req.params._id)}, function(err, equipmentItem) {
+        if (err) {
+            console.log(err);
+            res.status(500);
+            res.send('error');
+            return;
+        }
+        console.log('success');
+        res.send(equipmentItem);
+    });
+});
+
+//checkout item
+app.post('/api/equipments/dates', function(req, res) {
+    if(!req.session.user){
+        res.status(403);
+        res.send('forbidden');
+        return;
+    }
+    if(!req.body.date) {
+        res.send('empty');
+        return;
+    }
+    console.log(req.body);
+    console.log(req.body.date);
+    db.collection('equipments').findOne({_id: ObjectID(req.body.objectId)}, function(err, equipmentItem) {
+        if (err) {
+            console.log(err);
+            res.status(500);
+            res.send('error');
+            return;
+        }
+        for (let date in equipmentItem.datesCheckedOut) {
+            if (req.body.date === equipmentItem.datesCheckedOut[date]) {
+                res.send({duplicated:'duplicated'});
+                console.log('item not availible');
+                return;
+            }
+        }
+        db.collection('equipments').updateOne(
+            {_id: ObjectID(req.body.objectId)},
+            {$push: {datesCheckedOut: req.body.date}},
+            function(err, updateStatus) {
+            if (err) {
+                console.log(err);
+                res.status(500);
+                res.send('error');
+                return;
+            }
+            console.log(updateStatus.result);
+            res.send({success:'success'});
+        });
+    });
 });
 
 app.use(express.static('public'));

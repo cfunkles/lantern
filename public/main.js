@@ -35,7 +35,7 @@ var mainAppVue = new Vue({
             category: '',
             condition: '',
             description: '',
-            datesAvailible: '',
+            datesCheckedOut: [],
             pickUpLocation: {
                 address: '',
                 city: '',
@@ -44,6 +44,7 @@ var mainAppVue = new Vue({
             },
             gearReview: [],//going to fill this array with objects the have rating number and comments
             ownerId: '',
+            objectId: '',
             imageFileName: '',
         },
         //change this depending what items user wants to see.
@@ -249,7 +250,6 @@ var mainAppVue = new Vue({
             }
         },
 
-
         //method for reset buttons
         clearForm: function(event) {
             event.preventDefault();
@@ -272,27 +272,96 @@ var mainAppVue = new Vue({
 Vue.component('equipment-item', {
     template: `
         <div class="well itemComponent">
-            <h3 class="center">{{item.brand}} {{item.name}} {{item.category}}</h3>
-            <h3>Model: {{item.model}} Size: {{item.size}} in: {{item.condition}} condition</h3>
-            <img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment">
-            <p>{{item.description}}</p>
-            <p>
-                {{item.address}}<br>
-                {{item.city}}<br>
-                {{item.state}}<br>
-                {{item.zip}}
-            </p>
+            <h3 class="center">{{item.name}} {{item.brand}} {{item.model}}</h3>
+            <p><img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment"> </p>
+            <p>Condition: {{item.condition}}</p>
+            <p>Size: {{item.size}}</p>
+            <p>Category: {{item.category}}</p>
+            <p>Description from the Sharer: {{item.description}}</p>
+            <p> Location of Item: 
+                {{item.address}}, {{item.city}}, {{item.state}}, {{item.zip}}</p>
+            <input v-model="selectedDate" type="date" min="2017-06-17" max="2018-10-01">
+            <button class="btn btn-info" v-on:click="checkavailibility(item._id)">Check Availibility</button>
+            <button class="btn btn-warning" v-on:click="checkout(item._id)">Check out Item</button>
+            <p v-if="availible">Item availible</p>
+            <p v-if="notAvailible">Item not Availible</p>
+            <p v-if="rented">Success! Item was checked out for {{selectedDate}}</p>
+            <p v-if="empty">Nothing Selected! Enter Date</p>
         </div>
     `,
     props : ['item'],
     data: function(){
         // we use a function for data on components so that each component gets unique data, not references to each other's data
-        return {};
+        return {
+            selectedDate: '',
+            availible: false,
+            notAvailible: false,
+            rented: false,
+            //to do find way to not show rented when date has changed
+            empty: false,
+        };
     },
     computed:{
 
     },
     methods:{
+        //loops the date array to find availiblity.
+        checkavailibility: function(itemId) {
+            thatVm = this;
+            if(this.selectedDate) {
+                $.get('/api/equipments/dates/' + itemId, function(item) {
+                    console.log(thatVm.selectedDate);
+                    for (var date in item.datesCheckedOut) {
+                        if (thatVm.selectedDate === item.datesCheckedOut[date]) {
+                            console.log('item not availible');
+                            thatVm.notAvailible = true;
+                            thatVm.availible = false;
+                            thatVm.empty = false;
+                            thatVm.rented = false;
+                            return;
+                        }
+                    }
+                    thatVm.notAvailible = false;
+                    thatVm.availible = true;
+                    thatVm.rented = false;
+                    thatVm.empty = false;
+                    console.log('availible');
+                });
+            } else {
+                thatVm.empty = true;
+                thatVm.availible = false;
+                thatVm.notAvailible = false;
+                thatVm.rented = false;
+            }
+        },
 
+        //adds the date to the date array of item
+        checkout: function(itemId) {
+            thatVm = this;
+            console.log(itemId);
+            $.post('/api/equipments/dates', {date: this.selectedDate, objectId: itemId}, function(confirmation) {
+                //add style to handle not being logged in.
+                if(confirmation.duplicated) {
+                    console.log('unavailible');
+                    thatVm.notAvailible = true;
+                    thatVm.availible = false;
+                    thatVm.empty = false;
+                    thatVm.rented = false;
+                    return;
+                }
+                if(confirmation.success) {
+                    console.log('checked out');
+                    thatVm.rented = true;
+                    thatVm.notAvailible = false;
+                    thatVm.empty = false;
+                    return;
+                }
+                thatVm.empty = true;
+                thatVm.rented = false;
+                thatVm.notAvailible = false;
+                thatVm.availible = false;
+                console.log(confirmation);
+            });
+        },
     },
 });

@@ -46,7 +46,8 @@
                 <button class="btn btn-info" v-on:click="submitSearch">Search</button>
             </div>
         </div>
-        
+
+        <!--search results section-->
         <br>
         <br>
         <section class="container" v-if="searchMade">
@@ -208,7 +209,7 @@
             </div>
         </form>
 
-
+        <!--profile Section-->
         <section class="container" v-if="loggedIn && profileClicked">
             <div class="center" v-if="equipmentArray.length === 0">
                 <h2>No Items Yet!</h2>
