@@ -52,7 +52,6 @@ app.post('/api/user/registration', function(req, res) {
     var requiredInput = ['username', 'password', 'name', 'state', 'email', 'agreedToTerms'];
     for (var i = 0; i < requiredInput.length; i++) {
         if (req.body[requiredInput[i]] === undefined) {
-            console.log('user did not fill in ' + requiredInput[i]);
             res.send('form incomplete');
             return;
         }
@@ -63,7 +62,6 @@ app.post('/api/user/registration', function(req, res) {
     }, function(err, user) {
         if (user === null) {
             //creates user only if it doesn't exist
-            req.body.equipmentItems = [];
             req.body.ratings = '';
             req.body.canSetUpGear = false;
             db.collection('users').insertOne(req.body, function(err, creationInfo) {
@@ -75,11 +73,10 @@ app.post('/api/user/registration', function(req, res) {
                 }
                 setUpSession(req, req.body);
                 res.send({success:'success'});
-                console.log('account created!');
+                console.log('account created!', req.body.name);
             });
         } else {
             res.send('exists');
-            console.log('account exists!');
         }
     });
 });
@@ -111,7 +108,7 @@ app.post('/api/user/login', function(req, res) {
             res.send('login error');
             return;
         }
-        console.log('user logged in!');
+        console.log('user logged in!', req.body.username);
         setUpSession(req, user);
         res.send(user);
     });
@@ -126,6 +123,7 @@ app.post('/api/equipments', multer({dest: 'public/images'}).single('gearImage'),
     }
     req.body.imageFileName = req.file.filename;
     req.body.ownerId = req.session.user._id;
+    req.body.usersRenting = [];
     db.collection('equipments').insertOne(req.body, function(err, creationInfo) {
         if(err) {
             console.log(err);
@@ -140,7 +138,7 @@ app.post('/api/equipments', multer({dest: 'public/images'}).single('gearImage'),
 });
 
 //search database for items per user
-app.get('/api/equipments', function(req, res) {
+app.get('/api/equipments/userowned', function(req, res) {
     if(!req.session.user){
         res.status(403);
         res.send('forbidden');
@@ -149,9 +147,28 @@ app.get('/api/equipments', function(req, res) {
     db.collection('equipments').find({
         ownerId: req.session.user._id
     }).toArray(function(err, itemsArray) {
-        console.log('err', err);
-        
         if(err) {
+            console.log(err);
+            res.status(500);
+            res.send('error');
+            return;
+        }
+        res.send(itemsArray);
+    });
+});
+
+//get the Items users checked out
+app.get('/api/equipments/usercheckouts', function(req, res) {
+    if(!req.session.user){
+        res.status(403);
+        res.send('forbidden');
+        return;
+    }
+    db.collection('equipments').find({
+        'usersRenting.userId': req.session.user._id
+    }).toArray(function(err, itemsArray) {
+        if(err) {
+            console.log(err);
             res.status(500);
             res.send('error');
             return;
@@ -190,7 +207,6 @@ app.get('/api/equipments/:city', function(req, res) {
 
 //search item availibility
 app.get('/api/equipments/dates/:_id', function(req, res) {
-    console.log(req.params._id);
     db.collection('equipments').findOne({_id: ObjectID(req.params._id)}, function(err, equipmentItem) {
         if (err) {
             console.log(err);
@@ -214,8 +230,6 @@ app.post('/api/equipments/dates', function(req, res) {
         res.send('empty');
         return;
     }
-    console.log(req.body);
-    console.log(req.body.date);
     db.collection('equipments').findOne({_id: ObjectID(req.body.objectId)}, function(err, equipmentItem) {
         if (err) {
             console.log(err);
@@ -223,16 +237,15 @@ app.post('/api/equipments/dates', function(req, res) {
             res.send('error');
             return;
         }
-        for (let date in equipmentItem.datesCheckedOut) {
-            if (req.body.date === equipmentItem.datesCheckedOut[date]) {
+        for (let rental in equipmentItem.usersRenting) {
+            if (req.body.date === equipmentItem.usersRenting[rental].date) {
                 res.send({duplicated:'duplicated'});
-                console.log('item not availible');
                 return;
             }
         }
         db.collection('equipments').updateOne(
             {_id: ObjectID(req.body.objectId)},
-            {$push: {datesCheckedOut: req.body.date}},
+            {$push: {usersRenting: {userId: req.session.user._id, date: req.body.date}}},
             function(err, updateStatus) {
             if (err) {
                 console.log(err);
@@ -240,7 +253,6 @@ app.post('/api/equipments/dates', function(req, res) {
                 res.send('error');
                 return;
             }
-            console.log(updateStatus.result);
             res.send({success:'success'});
         });
     });

@@ -10,6 +10,7 @@ var mainAppVue = new Vue({
             email: '',
             agreedToTerms: false,
         },
+
         passwordChecker: '',
 
         loginForm: {
@@ -22,7 +23,6 @@ var mainAppVue = new Vue({
             name: '',
             state: '',
             email: '',
-            rentedItems: [],
             ratings: '',
             canSetUpGear: false,
         },
@@ -35,16 +35,15 @@ var mainAppVue = new Vue({
             category: '',
             condition: '',
             description: '',
-            datesCheckedOut: [],
             pickUpLocation: {
                 address: '',
                 city: '',
                 state: '',
                 zip:  '',
             },
+            usersRenting: [{userId: 'userId', date: 'date'}],
             gearReview: [],//going to fill this array with objects the have rating number and comments
             ownerId: '',
-            objectId: '',
             imageFileName: '',
         },
         //change this depending what items user wants to see.
@@ -56,7 +55,8 @@ var mainAppVue = new Vue({
         aboutClicked: false,
         storyClicked: false,
         addGearClicked: false,
-        profileClicked: false,
+        ownedClicked: false,
+        rentedClicked: false,
         home: true,
         searchMade: false,
     },
@@ -89,6 +89,7 @@ var mainAppVue = new Vue({
             this.aboutClicked = false;
             this.storyClicked = false;
             this.createAccountClicked = false;
+            this.searchMade = false;
             this.home = false;
         },
         clickCreateAccount: function() {
@@ -100,6 +101,7 @@ var mainAppVue = new Vue({
             this.loginClicked = false;
             this.aboutClicked = false;
             this.storyClicked = false;
+            this.searchMade = false;
             this.home = false;
         },
         clickNavAbout: function() {
@@ -111,9 +113,11 @@ var mainAppVue = new Vue({
             this.aboutClicked = true;
             this.storyClicked = false;
             this.addGearClicked = false;
-            this.profileClicked = false;
+            this.ownedClicked = false;
+            this.rentedClicked = false;
             this.loginClicked = false;
             this.createAccountClicked = false;
+            this.searchMade = false;
             this.home = false;
         },
         clickNavStory: function() {
@@ -124,10 +128,12 @@ var mainAppVue = new Vue({
             }
             this.storyClicked = true;
             this.aboutClicked = false;
-            this.profileClicked = false;
+            this.ownedClicked = false;
+            this.rentedClicked = false;
             this.addGearClicked =false;
             this.loginClicked = false;
             this.createAccountClicked = false;
+            this.searchMade = false;
             this.home = false;
         },
         clickAddItem: function() {
@@ -138,18 +144,37 @@ var mainAppVue = new Vue({
             this.addGearClicked = true;
             this.storyClicked = false;
             this.aboutClicked = false;
-            this.profileClicked = false;
+            this.ownedClicked = false;
+            this.rentedClicked = false;
+            this.searchMade = false;
             this.home = false;
         },
-        clickSeeProfile: function() {
-            if(this.profileClicked) {
+        clickOwned: function() {
+            if(this.ownedClicked) {
                 this.clickHomeLoggedIn();
                 return;
             }
-            this.profileClicked= true;
+            this.getOwnedItems();
+            this.ownedClicked= true;
+            this.rentedClicked = false;
             this.addGearClicked = false;
             this.storyClicked = false;
             this.aboutClicked = false;
+            this.searchMade = false;
+            this.home = false;
+        },
+        clickRented: function() {
+            if(this.rentedClicked) {
+                this.clickHomeLoggedIn();
+                return;
+            }
+            this.getRentedItems();
+            this.rentedClicked = true;
+            this.ownedClicked = false;
+            this.addGearClicked = false;
+            this.storyClicked = false;
+            this.aboutClicked = false;
+            this.searchMade = false;
             this.home = false;
         },
         clickHome: function() {
@@ -165,7 +190,8 @@ var mainAppVue = new Vue({
             this.aboutClicked = false;
             this.storyClicked = false;
             this.addGearClicked = false;
-            this.profileClicked = false;
+            this.ownedClicked = false;
+            this.rentedClicked = false;
             this.searchMade = false;
         },
 
@@ -174,6 +200,7 @@ var mainAppVue = new Vue({
             if(this.matchPasswords) {
                 console.log('passwords match!');
                 var thatVm=this;
+                //why is the password checker being injected into the signUpForm?
                 $.post('/api/user/registration', this.signUpForm, function(res) {
                     if(res.success) {
                         console.log('account created and logged in!');
@@ -186,7 +213,7 @@ var mainAppVue = new Vue({
                         thatVm.createAccountClicked = false;
                         thatVm.loginClicked = false;
                         thatVm.loggedIn = true;
-                        thatV.home = true;
+                        thatVm.home = true;
                     } else {
                         //to do, make more dynamic controls for this response
                         console.log(res);
@@ -198,9 +225,9 @@ var mainAppVue = new Vue({
         },
 
         getUserInfo: function() {
-            thatVm = this;
-            $.get('api/user', function(user) {
-                setUserInfo(user);
+            var thatVm = this;
+            $.get('/api/user', function(user) {
+                thatVm.setUserInfo(user);
             });
         },
 
@@ -209,7 +236,6 @@ var mainAppVue = new Vue({
                 this.userInfo[key] = user[key];
             }
         },
-
 
         submitLogin: function(event) {
             event.preventDefault();
@@ -225,14 +251,21 @@ var mainAppVue = new Vue({
                     thatVm.loggedIn = true;
                     thatVm.home = true;
                     thatVm.setUserInfo(user);
-                    thatVm.getEquipmentItemsForUser();
+                    thatVm.getOwnedItems();
                 }
             });
         },
 
-        getEquipmentItemsForUser: function() {
+        getOwnedItems: function() {
             thatVm = this;
-            $.get('/api/equipments', function(itemsArray) {
+            $.get('/api/equipments/userowned', function(itemsArray) {
+                thatVm.equipmentArray = itemsArray;
+            });
+        },
+
+        getRentedItems: function() {
+            thatVm = this;
+            $.get('/api/equipments/usercheckouts', function(itemsArray) {
                 thatVm.equipmentArray = itemsArray;
             });
         },
@@ -261,11 +294,12 @@ var mainAppVue = new Vue({
                 data: formData, 
                 success: function(res) {
                     if(res.success) {
-                        thatVm.getEquipmentItemsForUser();
+                        thatVm.getOwnedItems();
                         thatVm.clearForm(event);
                         thatVm.addGearClicked = false;
+                        thatVm.home = true;
+                        return;
                     }
-                    console.log('no success creating new item');
                 },
             });
         },
@@ -306,17 +340,24 @@ var mainAppVue = new Vue({
     }
 }); 
 
-Vue.component('equipment-item', {
+
+
+Vue.component('search-item', {
     template: `
-        <div class="well itemComponent">
+        <div class="well mySearchedItem">
             <h3 class="center">{{item.name}} {{item.brand}} {{item.model}}</h3>
             <p><img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment"> </p>
             <p>Condition: {{item.condition}}</p>
             <p>Size: {{item.size}}</p>
             <p>Category: {{item.category}}</p>
             <p>Description from the Sharer: {{item.description}}</p>
-            <p> Location of Item: 
-                {{item.address}}, {{item.city}}, {{item.state}}, {{item.zip}}</p>
+            <p> Location of Item: </p>
+            <ul class="address">
+                <li>{{item.address}}</li>
+                <li>{{item.city}}</li>
+                <li>{{item.state}}</li>
+                <li>{{item.zip}}</li>
+            </ul>
             <input v-model="selectedDate" type="date" min="2017-06-17" max="2018-10-01">
             <button class="btn btn-info" v-on:click="checkavailibility(item._id)">Check Availibility</button>
             <button class="btn btn-warning" v-on:click="checkout(item._id)">Check out Item</button>
@@ -347,10 +388,8 @@ Vue.component('equipment-item', {
             thatVm = this;
             if(this.selectedDate) {
                 $.get('/api/equipments/dates/' + itemId, function(item) {
-                    console.log(thatVm.selectedDate);
-                    for (var date in item.datesCheckedOut) {
-                        if (thatVm.selectedDate === item.datesCheckedOut[date]) {
-                            console.log('item not availible');
+                    for (var rental in item.usersRenting) {
+                        if (thatVm.selectedDate === item.usersRenting[rental].date) {
                             thatVm.notAvailible = true;
                             thatVm.availible = false;
                             thatVm.empty = false;
@@ -362,7 +401,6 @@ Vue.component('equipment-item', {
                     thatVm.availible = true;
                     thatVm.rented = false;
                     thatVm.empty = false;
-                    console.log('availible');
                 });
             } else {
                 thatVm.empty = true;
@@ -375,11 +413,9 @@ Vue.component('equipment-item', {
         //adds the date to the date array of item
         checkout: function(itemId) {
             thatVm = this;
-            console.log(itemId);
             $.post('/api/equipments/dates', {date: this.selectedDate, objectId: itemId}, function(confirmation) {
                 //add style to handle not being logged in.
                 if(confirmation.duplicated) {
-                    console.log('unavailible');
                     thatVm.notAvailible = true;
                     thatVm.availible = false;
                     thatVm.empty = false;
@@ -387,7 +423,6 @@ Vue.component('equipment-item', {
                     return;
                 }
                 if(confirmation.success) {
-                    console.log('checked out');
                     thatVm.rented = true;
                     thatVm.notAvailible = false;
                     thatVm.empty = false;
@@ -397,8 +432,170 @@ Vue.component('equipment-item', {
                 thatVm.rented = false;
                 thatVm.notAvailible = false;
                 thatVm.availible = false;
-                console.log(confirmation);
             });
         },
+    },
+});
+
+Vue.component('owned-item', {
+    template: `
+        <div class="well myOwnedItem">
+            <h3 class="center">Sharing: {{item.name}} {{item.brand}} {{item.model}}</h3>
+            <p><img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment"> </p>
+            <p v-if="editClicked">Condition: {{item.condition}}</p>
+            <p v-if="editClicked">Size: {{item.size}}</p>
+            <p v-if="editClicked">Category: {{item.category}}</p>
+            <p v-if="editClicked">What you had to say: {{item.description}}</p>
+            <p v-if="editClicked"> Location of Item for explorers to pick up at:</p> 
+            <ul class="address">
+                <li>{{item.address}}</li>
+                <li>{{item.city}}</li>
+                <li>{{item.state}}</li>
+                <li>{{item.zip}}</li>
+            </ul>
+            <button class="btn btn-info" v-if="!checkoutClicked" v-on:click="clickEdit">Edit Item</button>
+            <button class="btn btn-success" v-on:click="clickCheckout" v-if="!editClicked">Go exploring, Checkout your item</button>
+            <button class="btn btn-danger" v-if="!checkoutClicked && !editClicked">Delete Item</button>
+            <input v-if="checkoutClicked" v-model="selectedDate" type="date" min="2017-06-17" max="2018-10-01">
+            <button v-if="checkoutClicked" class="btn btn-info" v-on:click="checkavailibility(item._id)">Check Availibility</button>
+            <button v-if="checkoutClicked" class="btn btn-warning" v-on:click="checkout(item._id)">Check out Item</button>
+            <p v-if="availible && checkoutClicked">Item availible</p>
+            <p v-if="notAvailible && checkoutClicked">Item not Availible</p>
+            <p v-if="rented && checkoutClicked">Success! Item was checked out for {{selectedDate}}</p>
+            <p v-if="empty && checkoutClicked">Nothing Selected! Enter Date</p>
+        </div>
+    `,
+    props : ['item'],
+    data: function(){
+        // we use a function for data on components so that each component gets unique data, not references to each other's data
+        return {
+            equipmentArray: [],
+            selectedDate: '',
+            availible: false,
+            notAvailible: false,
+            rented: false,
+            empty: false,
+            editClicked: false,
+            checkoutClicked: false,
+        };
+    },
+    computed:{
+
+    },
+    methods:{
+        //loops the date array to find availiblity.
+        checkavailibility: function(itemId) {
+            thatVm = this;
+            if(this.selectedDate) {
+                $.get('/api/equipments/dates/' + itemId, function(item) {
+                    for (var rental in item.usersRenting) {
+                        if (thatVm.selectedDate === item.usersRenting[rental].date) {
+                            thatVm.notAvailible = true;
+                            thatVm.availible = false;
+                            thatVm.empty = false;
+                            thatVm.rented = false;
+                            return;
+                        }
+                    }
+                    thatVm.notAvailible = false;
+                    thatVm.availible = true;
+                    thatVm.rented = false;
+                    thatVm.empty = false;
+                });
+            } else {
+                thatVm.empty = true;
+                thatVm.availible = false;
+                thatVm.notAvailible = false;
+                thatVm.rented = false;
+            }
+        },
+
+        //adds the date to the date array of item
+        checkout: function(itemId) {
+            thatVm = this;
+            $.post('/api/equipments/dates', {date: this.selectedDate, objectId: itemId}, function(confirmation) {
+                //add style to handle not being logged in.
+                if(confirmation.duplicated) {
+                    thatVm.notAvailible = true;
+                    thatVm.availible = false;
+                    thatVm.empty = false;
+                    thatVm.rented = false;
+                    return;
+                }
+                if(confirmation.success) {
+                    thatVm.rented = true;
+                    thatVm.notAvailible = false;
+                    thatVm.empty = false;
+                    return;
+                }
+                thatVm.empty = true;
+                thatVm.rented = false;
+                thatVm.notAvailible = false;
+                thatVm.availible = false;
+            });
+        },
+
+        clickEdit: function() {
+            if(this.editClicked) {
+                this.editClicked = false;
+                return;
+            }
+            this.editClicked = true;
+        },
+
+        clickCheckout: function() {
+            if(this.checkoutClicked) {
+                this.checkoutClicked = false;
+                this.availible = false;
+                this.notAvailible = false;
+                this.rented = false;
+                this.empty = false;
+                return;
+            }
+            this.checkoutClicked = true;
+        }
+    },
+});
+
+Vue.component('rented-item', {
+    template: `
+        <div class="well myRentalItem">
+            <h3 class="center">I am renting this {{item.name}} {{item.brand}} {{item.model}}</h3>
+            <p>I will be using this {{item.name}} on {{dates}}</p>
+            <p><img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment"> </p>
+            <p>Condition: {{item.condition}}</p>
+            <p>Size: {{item.size}}</p>
+            <p>Category: {{item.category}}</p>
+            <p>Description from the Sharer: {{item.description}}</p>
+            <p> Location of Item where I will pick it up: </p>
+            <ul class="address">
+                <li>{{item.address}}</li>
+                <li>{{item.city}}</li>
+                <li>{{item.state}}</li>
+                <li>{{item.zip}}</li>
+            </ul>
+        </div>
+    `,
+    props : ['item', 'userid'],
+    data: function(){
+        // we use a function for data on components so that each component gets unique data, not references to each other's data
+        return {
+             userId: this.userid,
+            //  dates: this.findTheCheckoutDates 
+        };
+    },
+    computed:{
+        dates: function() {
+            var dates = '';
+            for (var checkout in this.item.usersRenting) {
+                if(this.userId === this.item.usersRenting[checkout].userId) {
+                    dates += new Date(this.item.usersRenting[checkout].date ).toLocaleDateString() + " ";
+                }
+            }
+            return dates;
+        }
+    },
+    methods:{
+       
     },
 });

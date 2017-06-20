@@ -28,7 +28,8 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li v-if="loggedIn" v-on:click="clickHomeLoggedIn"><a href="#">Home</a></li>
                     <li v-if="!loggedIn" v-on:click="clickHome"><a href="#">Home</a></li>
-                    <li v-if="loggedIn" v-on:click="clickSeeProfile"><a href="#">Profile</a></li>
+                    <li v-if="loggedIn" v-on:click="clickOwned"><a href="#">Shared Items</a></li>
+                    <li v-if="loggedIn" v-on:click="clickRented"><a href="#">Rented Items</a></li>
                     <li v-if="loggedIn" v-on:click="clickAddItem"><a href="#">Add Item</a></li>
                     <li v-if="!loggedIn" v-on:click="clickCreateAccount"><a href="#">Sign Up</a> </li>
                     <li v-if="!loggedIn" v-on:click="clickLogin"><a href="#">Login</a></li>
@@ -58,12 +59,12 @@
             </div>
             <div class="center row" v-if="equipmentArray.length > 0">
                 <h2>Results!</h2>
-                <equipment-item 
+                <search-item 
                     v-for="item in equipmentArray" 
                     v-bind:item="item"
                     :key="item._id"
                     class="col-sm-4"
-                    ></equipment-item>
+                    ></search-item>
                 <input v-model="searchCity" type="text" placeholder="Search by City">
                 <button class="btn btn-info" v-on:click="submitSearch">Search</button>
             </div>
@@ -210,20 +211,39 @@
         </form>
 
         <!--profile Section-->
-        <section class="container" v-if="loggedIn && profileClicked">
+        <section class="container" v-if="loggedIn && ownedClicked">
             <div class="center" v-if="equipmentArray.length === 0">
                 <h2>No Items Yet!</h2>
                 <button v-on:click="clickAddItem" class="btn btn-primary">Add item!</button>
             </div>
             <div class="center row" v-if="equipmentArray.length > 0">
                 <h2>Items you are sharing</h2>
-                <equipment-item 
+                <owned-item 
                     v-for="item in equipmentArray" 
                     v-bind:item="item"
                     :key="item._id"
                     class="col-sm-4"
-                    ></equipment-item>
+                    ></owned-item>
                 <button v-on:click="clickAddItem" class="btn btn-primary">Add New item!</button>
+            </div>
+        </section>
+
+        <!--Rented Items section-->
+        <section class="container" v-if="loggedIn && rentedClicked">
+            <div class="center" v-if="equipmentArray.length === 0">
+                <h2>Nothing Checked Out</h2>
+                <button v-on:click="clickHomeLoggedIn" class="btn btn-primary">Find Something</button>
+            </div>
+            <div class="center row" v-if="equipmentArray.length > 0">
+                <h2>Item(s) you have checked out</h2>
+                <rented-item 
+                    v-for="item in equipmentArray" 
+                    v-bind:item="item"
+                    v-bind:userid="userInfo._id"
+                    :key="item._id"
+                    class="col-sm-4"
+                    ></rented-item>
+                <button v-on:click="clickHomeLoggedIn" class="btn btn-primary">Rent more for your exploring</button>
             </div>
         </section>
 

@@ -42,7 +42,7 @@
 }
 
 #app {
-    background-color: lightcyan;
+    background-color:rgba(255, 255, 255, .90);;
     color: midnightblue;
     font-family: Arial, Helvetica, sans-serif;
 }
@@ -55,10 +55,19 @@ p {
     font-size: 16px;
 }
 
-.itemComponent {
+.mySearchedItem {
     width: 45%;
     margin-left: 35px;
+}
 
+.myRentalItem {
+    width: 45%;
+    margin-left: 35px;
+}
+
+.myOwnedItem {
+    width: 45%;
+    margin-left: 35px;
 }
 
 .equipmentImage {
@@ -66,12 +75,18 @@ p {
     width: 100px;
 }
 
+.address {
+    list-style-type: none;
+    text-align: left;
+    font-weight: 700;
+}
+
 section {
     margin-bottom: 80px;
     padding: 50px;
     border: 1px solid midnightblue;
     margin-top: 20px;
-    background-color: snow;
+    background-color: rgb(255, 255, 255);
     border-radius: 3%;
 }
 
