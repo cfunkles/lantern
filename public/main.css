@@ -1,22 +1,59 @@
-.logo {
-    background-image: url("IMG_0602.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 100vw;
-    height: 370px;
-    margin-top: 50px;
+body {
+    background-color: midnightblue;
 }
 
+/*styles the background between the navbars*/
+#app {
+    background-color:rgba(255, 255, 255, .90);
+    color: midnightblue;
+    font-family: 'Roboto Slab', serif;
+    padding-top: 50px;
+}
+
+p {
+    font-size: 16px;
+}
+
+/*for the content of each navigation section*/
+section {
+    margin: 50px;
+    padding: 10px;
+    border: 1px solid midnightblue;
+    background-color: rgb(255, 255, 255);
+    border-radius: 3%;
+}
+
+form.well {
+    width: 50%;
+    margin: auto;
+}
+
+footer {
+
+}
+
+/*styles the navbars*/
 .navbar {
     margin-bottom: 0;
     background-color: midnightblue;
     color: gold;
 }
 
+/*styles the logo height in nav bar*/
 .navbar-header img {
    height: 30px;
 }
 
+/*styles the background of the search section*/
+.logo {
+    background-image: url("IMG_0602.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 370px;
+}
+
+/*styles logo and positions logo in search box*/
 .logo img {
     height: 15%;
     width: 20%;
@@ -24,10 +61,12 @@
     left: 230px;
 }
 
+/*for centering elements*/
 .center {
     text-align: center;
 }
 
+/*styles the search input and button*/
 .citySearch {
     position: absolute;
     left: 40%;
@@ -36,60 +75,48 @@
     color: midnightblue;
 }
 
+/*styles the search input*/
 .citySearch input {
     height: 40px;
     width: 250px;
 }
 
-#app {
-    background-color:rgba(255, 255, 255, .90);;
-    color: midnightblue;
-    font-family: Arial, Helvetica, sans-serif;
+.instructions {
+    list-style-type: none;
 }
 
-body {
-    background-color: midnightblue;
-}
-
-p {
-    font-size: 16px;
-}
-
+/*for the vue componets in the search results*/
 .mySearchedItem {
     width: 45%;
     margin-left: 35px;
 }
 
+/*for the vue component in the rented items section*/
 .myRentalItem {
     width: 45%;
     margin-left: 35px;
 }
 
+/*for the vue component in the owned items section*/
 .myOwnedItem {
     width: 45%;
     margin-left: 35px;
 }
 
+/*for the images attached to each item*/
 .equipmentImage {
     height: 100px;
     width: 100px;
 }
 
+/*for address's*/
 .address {
     list-style-type: none;
     text-align: left;
     font-weight: 700;
 }
 
-section {
-    margin-bottom: 80px;
-    padding: 50px;
-    border: 1px solid midnightblue;
-    margin-top: 20px;
-    background-color: rgb(255, 255, 255);
-    border-radius: 3%;
-}
-
+/*for dynamic styling of sign up page, doesn't not work*/
 input.password {
     color: green;
     border-color: green;

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
     <script
         src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -17,7 +18,6 @@
 </head>
 <body>
     <div id="app">
-
         <!--top navigation bar-->
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
@@ -49,14 +49,175 @@
         <div class="logo" v-if="home">
             <img src="./lantern-full-logo.png" alt="lantern logo">
             <div class="center citySearch">
-                <input v-model="searchCity" type="text" placeholder="Search by City">
-                <button class="btn btn-info" v-on:click="submitSearch">Search</button>
+                <input v-model="searchCity" type="text" class="center" placeholder="Enter City">
+                <button class="btn btn-info" v-on:click="submitSearch">Search Items</button>
             </div>
         </div>
 
+        <!--Sign up instructions-->
+        <section v-if="home" class="container">
+            <h2 class="center">How to Get Started</h2>
+            <div class="row">
+                <ul class="instructions">
+                    <li class="col-sm-4">1. Set up your user account with a username and password. This user account will allow you to be a Sharer and an Explorer. You will need to agree to the terms of being both a Sharer and an Explorer.</li>
+                    <li class="col-sm-4">2. As a Sharer, take pictures of your item to share. Create a posting of your equipment with model information, description, location, availability, and condition.</li>
+                    <li class="col-sm-4">3. As an Explorer, search for the equipment based on location and availability.</li>
+                </ul>
+            </div>
+            <br>
+            <br>
+            <!--Buttons to show login or sign up form-->
+            <div class="center">
+                <button v-if="!loggedIn" v-on:click="clickCreateAccount" class="btn btn-primary">Sign Up!</button>
+                <button v-if="!loggedIn" v-on:click="clickLogin" class="btn btn-default">Already Register, Click Here</button>
+            </div>
+        </section>
+
+        <!--Registration form. Adds info data to sign up form. All fields required, and terms is a checkbox-->
+        <section class="container" v-if="createAccountClicked" v-on:submit="submitNewAccount">
+            <form class="well form-horizontal">
+                <h2 class="center">Sign Up!</h2>
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="username">Username: </label>
+                    <div class="col-sm-8">
+                        <input class="form-control" v-model="signUpForm.username" type="text" placeholder="OutdoorDude" id="username" required>
+                    </div>
+                </div>
+                <div class="form-group {has-success: matchPasswords}">
+                    <label class="control-label col-sm-4" for="password">Password: </label>
+                    <div class="col-sm-8">
+                        <input class="form-control" v-model="signUpForm.password" type="password" placeholder="Ex@mplepassword" id="password" required>
+                    </div>
+                </div>
+                <div class="form-group {has-success: matchPasswords}">
+                    <label class="control-label col-sm-4" for="passwordChecker">Re-Enter Password: </label>
+                    <div class="col-sm-8">
+                        <input class="form-control" v-model="passwordChecker" type="password" placeholder="Ex@mplepassword" id="paswordChecker" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="fullName">First and Last Name: </label>
+                    <div class="col-sm-8">
+                        <input class="form-control" v-model="signUpForm.name" type="text" placeholder="Bear Grylls" id="fullName" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="state">State of Residence: </label>
+                    <div class="col-sm-8">
+                        <select class="form-control" v-model="signUpForm.state" id="state" required>
+                            <option value="" disabled selected>--</option>
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="AR">Arkansas</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="DE">Delaware</option>
+                            <option value="DC">District Of Columbia</option>
+                            <option value="FL">Florida</option>
+                            <option value="GA">Georgia</option>
+                            <option value="HI">Hawaii</option>
+                            <option value="ID">Idaho</option>
+                            <option value="IL">Illinois</option>
+                            <option value="IN">Indiana</option>
+                            <option value="IA">Iowa</option>
+                            <option value="KS">Kansas</option>
+                            <option value="KY">Kentucky</option>
+                            <option value="LA">Louisiana</option>
+                            <option value="ME">Maine</option>
+                            <option value="MD">Maryland</option>
+                            <option value="MA">Massachusetts</option>
+                            <option value="MI">Michigan</option>
+                            <option value="MN">Minnesota</option>
+                            <option value="MS">Mississippi</option>
+                            <option value="MO">Missouri</option>
+                            <option value="MT">Montana</option>
+                            <option value="NE">Nebraska</option>
+                            <option value="NV">Nevada</option>
+                            <option value="NH">New Hampshire</option>
+                            <option value="NJ">New Jersey</option>
+                            <option value="NM">New Mexico</option>
+                            <option value="NY">New York</option>
+                            <option value="NC">North Carolina</option>
+                            <option value="ND">North Dakota</option>
+                            <option value="OH">Ohio</option>
+                            <option value="OK">Oklahoma</option>
+                            <option value="OR">Oregon</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="RI">Rhode Island</option>
+                            <option value="SC">South Carolina</option>
+                            <option value="SD">South Dakota</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="TX">Texas</option>
+                            <option value="UT">Utah</option>
+                            <option value="VT">Vermont</option>
+                            <option value="VA">Virginia</option>
+                            <option value="WA">Washington</option>
+                            <option value="WV">West Virginia</option>
+                            <option value="WI">Wisconsin</option>
+                            <option value="WY">Wyoming</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="email">Email: </label>
+                    <div class="col-sm-8">
+                        <input class="form-control" v-model="signUpForm.email" type="email" placeholder="beargrs@wild.com" id="email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-8">
+                        <div class="checkbox">
+                            <label for="makeCamp"><input v-model="signUpForm.canSetUpGear" type="checkbox" id="makeCamp">
+                                As a Sharer, are you willing to set up a campsite? <a href="#">More Information</a>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-8">
+                        <div class="checkbox">
+                        <label for="acceptTerms"><input v-model="signUpForm.agreedToTerms" type="checkbox" id="acceptTerms" required>
+                            By clicking Submit you agree to our <a href="#">terms</a>
+                        </label>
+                    </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-offset-4" for="resetRegistration">Reset sign up form: 
+                        <button type='notSubmit' v-on:click="clearForm" id="resetRegistration" class="btn btn-warning">Reset</button>
+                    </label>
+                </div>
+                <div class="form-group center">
+                    <button type="submit" class="btn btn-primary" id="submitRegistration">Submit</button>
+                </div>
+            </form>
+        </section>
+
+        <!--the login form-->
+        <section class="container" v-if="loginClicked" v-on:submit="submitLogin">
+            <form class="well form-horizontal">
+                <h2 class="center">Login</h2>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="loginUsername">Username:</label>
+                    <div class="col-sm-10">
+                        <input v-model="loginForm.username" class="form-control" type="text" placeholder="OutdoorDude" id="loginUsername" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="loginPassword"> Password:</label>
+                    <div class="col-sm-10">
+                        <input v-model="loginForm.password" class="form-control" type="password" id="loginPassword" placeholder="Ex@amplepassword" required>
+                    </div>
+                </div>
+                <div class="form-group center">
+                    <button type="submit" id="submitLogin" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+        </section>
+
         <!--search results section-->
-        <br>
-        <br>
         <section class="container" v-if="searchMade">
             <div class="center" v-if="equipmentArray.length === 0">
                 <h2>No Results!</h2>
@@ -76,156 +237,7 @@
             </div>
         </section>
 
-        <!--Registration form. Adds info data to sign up form. All fields required, and terms is a checkbox-->
-        <form v-if="createAccountClicked" v-on:submit="submitNewAccount" class="form-horizontal">
-            <br>
-            <br>
-            <br>
-            <h2 class="col-sm-offset-6">Sign up!</h2>
-            <div class="form-group">
-                <label class="control-label col-sm-offset-4 col-sm-2" for="username">username: </label>
-                <div class="col-sm-2">
-                    <input class="form-control" v-model="signUpForm.username" type="text" placeholder="AwesomeUserDude" id="username" required>
-                </div>
-            </div>
-            <div class="form-group {has-success: matchPasswords">
-                <label class="control-label col-sm-offset-4 col-sm-2" for="password">password: </label>
-                <div class="col-sm-2">
-                    <input v-model="signUpForm.password" class="form-control" type="password" placeholder="Ex@mp19P@ssw0rD" id="password" required>
-                </div>
-            </div>
-            <div class="form-group {has-success: matchPasswords">
-                <label class="control-label  col-sm-offset-4 col-sm-2" for="passwordChecker">re-enter password: </label>
-                <div class="col-sm-2">
-                    <input v-model="passwordChecker" class="form-control" type="password" placeholder="Ex@mp19P@ssw0rD" id="paswordChecker" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-offset-4 col-sm-2" for="fullName">First and Last Name: </label>
-                <div class="col-sm-2">
-                    <input v-model="signUpForm.name" class="form-control" type="text" placeholder="Chad Chaper" id="fullName" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-offset-4 col-sm-2" for="state">State you live in: </label>
-                <div class="col-sm-2">
-                    <select v-model="signUpForm.state" class="form-control" id="state" required>
-                        <option value="" disabled selected>--</option>
-                        <option value="AL">Alabama</option>
-                        <option value="AK">Alaska</option>
-                        <option value="AZ">Arizona</option>
-                        <option value="AR">Arkansas</option>
-                        <option value="CA">California</option>
-                        <option value="CO">Colorado</option>
-                        <option value="CT">Connecticut</option>
-                        <option value="DE">Delaware</option>
-                        <option value="DC">District Of Columbia</option>
-                        <option value="FL">Florida</option>
-                        <option value="GA">Georgia</option>
-                        <option value="HI">Hawaii</option>
-                        <option value="ID">Idaho</option>
-                        <option value="IL">Illinois</option>
-                        <option value="IN">Indiana</option>
-                        <option value="IA">Iowa</option>
-                        <option value="KS">Kansas</option>
-                        <option value="KY">Kentucky</option>
-                        <option value="LA">Louisiana</option>
-                        <option value="ME">Maine</option>
-                        <option value="MD">Maryland</option>
-                        <option value="MA">Massachusetts</option>
-                        <option value="MI">Michigan</option>
-                        <option value="MN">Minnesota</option>
-                        <option value="MS">Mississippi</option>
-                        <option value="MO">Missouri</option>
-                        <option value="MT">Montana</option>
-                        <option value="NE">Nebraska</option>
-                        <option value="NV">Nevada</option>
-                        <option value="NH">New Hampshire</option>
-                        <option value="NJ">New Jersey</option>
-                        <option value="NM">New Mexico</option>
-                        <option value="NY">New York</option>
-                        <option value="NC">North Carolina</option>
-                        <option value="ND">North Dakota</option>
-                        <option value="OH">Ohio</option>
-                        <option value="OK">Oklahoma</option>
-                        <option value="OR">Oregon</option>
-                        <option value="PA">Pennsylvania</option>
-                        <option value="RI">Rhode Island</option>
-                        <option value="SC">South Carolina</option>
-                        <option value="SD">South Dakota</option>
-                        <option value="TN">Tennessee</option>
-                        <option value="TX">Texas</option>
-                        <option value="UT">Utah</option>
-                        <option value="VT">Vermont</option>
-                        <option value="VA">Virginia</option>
-                        <option value="WA">Washington</option>
-                        <option value="WV">West Virginia</option>
-                        <option value="WI">Wisconsin</option>
-                        <option value="WY">Wyoming</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-offset-4 col-sm-2" for="email">Email: </label>
-                <div class="col-sm-2">
-                    <input v-model="signUpForm.email" class="form-control" type="email" placeholder="chad@awesome.com" id="email" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="checkbox">
-                    <label class="control-label col-sm-offset-4 col-sm-4" for="makeCamp">
-                        <input v-model="signUpForm.canSetUpGear" type="checkbox" id="makeCamp">
-                        Are You Willing to set Up Campsite for user?
-                        <a href="#">View More Information</a>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="checkbox">
-                    <label class="control-label col-sm-offset-4 col-sm-4" for="acceptTerms">
-                        <input v-model="signUpForm.agreedToTerms" type="checkbox" id="acceptTerms" required>
-                        By clicking this you agree to our terms:
-                        <a href="#">View our Terms</a>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-offset-4 col-sm-2" for="resetRegistration">Messed Up Resgistration?</label>
-                <button type='notSubmit' v-on:click="clearForm" id="resetRegistration" class="btn btn-primary col-sm-2">Reset</button>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-offset-4 col-sm-2" for="submitRegistration">Click to create account!</label>
-                <button type="submit" class="btn btn-primary col-sm-2" id="submitRegistration">Submit</button>
-            </div> 
-        </form>
-
-        <!--the login form-->
-        <form v-if="loginClicked" v-on:submit="submitLogin" class="form-horizontal">
-            <br>
-            <br>
-            <br>
-            <h2 class="col-sm-offset-5">Login!</h2>
-            <div class="form-group">
-                <label class="control-label col-sm-offset-3 col-sm-2" for="loginUsername">Username:</label>
-                <div class="col-sm-2">
-                    <input v-model="loginForm.username" class="form-control col-sm-2" type="text" placeholder="MyUserName" id="loginUsername" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-offset-3 col-sm-2" for="loginPassword"> Password:</label>
-                <div class="col-sm-2">
-                    <input v-model="loginForm.password" class="form-control" type="password" id="loginPassword" placeholder="MySecretPassword" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-offset-4 col-sm-2" for="submitLogin">Click To login:</label>
-                <div class="col-sm-1">
-                    <button type="submit" id="submitLogin" class="btn btn-primary">Login</button>
-                </div>
-            </div>
-        </form>
-
-        <!--profile Section-->
+        <!--profile owned items-->
         <section class="container" v-if="loggedIn && ownedClicked">
             <div class="center" v-if="equipmentArray.length === 0">
                 <h2>No Items Yet!</h2>
@@ -243,7 +255,7 @@
             </div>
         </section>
 
-        <!--Rented Items section-->
+        <!--Profile Rented Items section-->
         <section class="container" v-if="loggedIn && rentedClicked">
             <div class="center" v-if="equipmentArray.length === 0">
                 <h2>Nothing Checked Out</h2>
@@ -264,41 +276,41 @@
 
         <!--create new item section-->
         <section v-if="loggedIn && addGearClicked" class="container">
-            <form v-on:submit="submitNewEquipment" class="form-horizontal">
-                <h2 class="col-sm-offset-4">Add Equipment Item!</h2>
+            <form v-on:submit="submitNewEquipment" class="form-horizontal well">
+                <h2 class="center">Add Item</h2>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentName">Name of Equipment: </label>
-                    <div class="col-sm-2">
-                        <input class="form-control" v-model="equipmentItem.name" type="text" placeholder="Cozy tent" id="newEquipmentName" required>
+                    <label class="control-label col-sm-3" for="newEquipmentName">Name of Item: </label>
+                    <div class="col-sm-9">
+                        <input class="form-control" v-model="equipmentItem.name" type="text" placeholder="example: Lantern" id="newEquipmentName" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentBrand">Brand: </label>
-                    <div class="col-sm-2">
-                        <input class="form-control" v-model="equipmentItem.brand" type="text" placeholder="Kelty" id="newEquipmentBrand" required>
+                    <label class="control-label col-sm-3" for="newEquipmentBrand">Brand: </label>
+                    <div class="col-sm-9">
+                        <input class="form-control" v-model="equipmentItem.brand" type="text" placeholder="example: Coleman" id="newEquipmentBrand" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentModel">Model: </label>
-                    <div class="col-sm-2">
-                        <input class="form-control" v-model="equipmentItem.model" type="text" placeholder="v-24" id="newEquipmentModel" required>
+                    <label class="control-label col-sm-3" for="newEquipmentModel">Model: </label>
+                    <div class="col-sm-9">
+                        <input class="form-control" v-model="equipmentItem.model" type="text" placeholder="example: 220F" id="newEquipmentModel" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentSize">Size: </label>
-                    <div class="col-sm-2">
-                        <input class="form-control" v-model="equipmentItem.size" type="text" placeholder="2 person" id="newEquipmentSize" required>
+                    <label class="control-label col-sm-3" for="newEquipmentSize">Size: </label>
+                    <div class="col-sm-9">
+                        <input class="form-control" v-model="equipmentItem.size" type="text" placeholder="example: medium" id="newEquipmentSize" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentDescription">Description of item: </label>
-                    <div class="col-sm-2">
-                        <input class="form-control" v-model="equipmentItem.description" type="textarea" placeholder="This tent is good for backpacking" id="newEquipmentDescription" required>
+                    <label class="control-label col-sm-3" for="newEquipmentDescription">Description: </label>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" rows="3" v-model="equipmentItem.description" placeholder="example: Green lanter will illuminate small campsite. Will need to provide fuel for lantern." id="newEquipmentDescription" required></textarea>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentCategory">Category:</label>
-                    <div class="col-sm-2">
+                    <label class="control-label col-sm-3" for="newEquipmentCategory">Category:</label>
+                    <div class="col-sm-9">
                         <select v-model="equipmentItem.category" id="newEquipmentCategory" required>
                             <option value="" disabled selected>--</option>
                             <option value="shelter">Shelter</option>
@@ -311,8 +323,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentCondition">Condition: </label>
-                    <div class="col-sm-2">
+                    <label class="control-label col-sm-3" for="newEquipmentCondition">Condition: </label>
+                    <div class="col-sm-9">
                         <select v-model="equipmentItem.condition" id="newEquipmentCondition" required>
                             <option value="" disabled selected>--</option>
                             <option value="new">New</option>
@@ -323,35 +335,33 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-4 col-sm-2" for="newEquipmentLocation">Rental Location: </label>
-                    <div class="col-sm-2">
-                        <input class="form-control" v-model="equipmentItem.pickUpLocation.address" type="text" placeholder="1234 Awesome St." id="newEquipmentLocation" required>
-                        <input class="form-control" v-model="equipmentItem.pickUpLocation.city" type="text" placeholder="Fort Cool" id="newEquipmentLocation" required>
-                        <input class="form-control" v-model="equipmentItem.pickUpLocation.state" type="text" placeholder="Elabrasky" id="newEquipmentLocation" required>
-                        <input class="form-control" v-model="equipmentItem.pickUpLocation.zip" type="text" placeholder="80083" id="newEquipmentLocation" required>
+                    <label class="control-label col-sm-3" for="newEquipmentLocation">Rental Location: </label>
+                    <div class="col-sm-9">
+                        <input class="form-control" v-model="equipmentItem.pickUpLocation.address" type="text" placeholder="Street Address" id="newEquipmentLocation" required>
+                        <input class="form-control" v-model="equipmentItem.pickUpLocation.city" type="text" placeholder="City" id="newEquipmentLocation" required>
+                        <input class="form-control" v-model="equipmentItem.pickUpLocation.state" type="text" placeholder="State" id="newEquipmentLocation" required>
+                        <input class="form-control" v-model="equipmentItem.pickUpLocation.zip" type="text" placeholder="Zip Code" id="newEquipmentLocation" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-3 col-sm-2" for="newEquipmentImage">Image: </label>
-                    <div class="col-sm-3">
+                    <label class="control-label col-sm-3" for="newEquipmentImage">Image: </label>
+                    <div class="col-sm-9">
                         <input class="form-control" type="file" id="newEquipmentImage" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-offset-4 col-sm-2" for="resetEquipment">Messed Up Typing?</label>
-                    <button v-on:click="clearForm" id="resetEquipment" class="btn btn-primary col-sm-2">Reset</button>
+                    <label class="control-label col-sm-offset-3" for="resetItem">Reset form:  
+                        <button type='notSubmit' v-on:click="clearForm" id="resetItem" class="btn btn-warning">Reset</button>
+                    </label>
                 </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-offset-4 col-sm-2" for="submitEquipment">Share new equipment</label>
-                    <button type="submit" class="btn btn-primary col-sm-2" id="submitEquipment">Submit</button>
+                <div class="form-group center">
+                    <button type="submit" class="btn btn-primary" id="submitEquipment">Submit</button>
                 </div>
             </form>
         </section>
 
 
         <!--About section-->
-        <br>
-        <br>
         <section v-if="aboutClicked" class="container center">
             <div class="row">`
                 <h2 class="col-sm-offset-3 col-sm-6">What is Lantern?</h2>
@@ -362,38 +372,13 @@
             </div>
         </section>
 
-        <!--Sign up instructions-->
-        <section v-if="home" class="container center">
-            <div class="row">
-                <h2 class="col-sm-offset-3 col-sm-6">How to get started</h2>
-            </div>
-            <div class="row">
-                <ol>
-                    <li class="col-sm-4">Set up your user account with a username and password. This user account will allow you to be a Sharer and an Explorer. You will need to agree to the terms of being both a Sharer and an Explorer.</li>
-                    <li class="col-sm-4">As a Sharer, take pictures of your equipment packed and set-up. Create a posting of your equipment with model information, instructions, location, availability, and condition.</li>
-                    <li class="col-sm-4">As an Explorer, search for the equipment based on location, equipment, and/or availability.</li>
-                </ol>
-            </div>
-            <br>
-            <br>
-
-            <!--Buttons to show login or sign up form-->
-            <div class="row">
-                <button v-if="!loggedIn" v-on:click="clickCreateAccount" class="btn btn-primary col-sm-offset-3 col-sm-2">Sign Up!</button>
-                <button v-if="!loggedIn" v-on:click="clickLogin" class="btn btn-primary col-sm-offset-2 col-sm-3">Alread Registered, click here!</button>
-            </div>
-
-        </section>
-
         <!--Story of Lantern-->
-        <br>
-        <br>
         <section v-if="storyClicked" class="container center">
             <div class="row">
-                <h2 class="col-sm-offset-3 col-sm-6">How Lantern Came About?</h2>
+                <h2 class="col-sm-offset-3 col-sm-6">How Lantern Came About</h2>
             </div>
             <div class="row">
-                <p class="col-sm-offset-3 col-sm-6">About The idea baby for Lantern came about after my wife and I decided we wanted to visit San Francisco. We realized we had enough frequent flyer miles to fly to San Francisco from our home in Colorado. Unfortunately, when we looked at hotel costs we realized we could not afford the trip after a rental car and food expenses. If only we could camp near San Francisco we would save the cost of hotels and breakfast. We are avid campers in Colorado and with all the necessary gear (plus a little extra!). But how do you bring all your camping gear on a plane without all the extra fees. This is where the Lantern idea was born. What if we could rent camping gear from someone in San Francisco and camp near San Francisco? Could we rent out our extra camping stuff when we are not using it? Could we share our outdoor expertise with people visiting Colorado? And the lantern was lit!</p>
+                <p class="col-sm-offset-3 col-sm-6">The idea baby for Lantern came about after my wife and I decided we wanted to visit San Francisco. We realized we had enough frequent flyer miles to fly to San Francisco from our home in Colorado. Unfortunately, when we looked at hotel costs we realized we could not afford the trip after a rental car and food expenses. If only we could camp near San Francisco we would save the cost of hotels and breakfast. We are avid campers in Colorado and with all the necessary gear (plus a little extra!). But how do you bring all your camping gear on a plane without all the extra fees. This is where the Lantern idea was born. What if we could rent camping gear from someone in San Francisco and camp near San Francisco? Could we rent out our extra camping stuff when we are not using it? Could we share our outdoor expertise with people visiting Colorado? And the lantern was lit!</p>
             </div>
         </section>
 

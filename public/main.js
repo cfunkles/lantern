@@ -232,10 +232,11 @@ var mainAppVue = new Vue({
                     } else {
                         //to do, make more dynamic controls for this response
                         console.log(res);
+                        console.log('What!');
                     }
                 });
             } else {
-                console.log('passwords don\'t match');
+                alert('Passwords do no match');
             }
         },
 
@@ -261,7 +262,7 @@ var mainAppVue = new Vue({
             var thatVm = this;
             $.post('/api/user/login', this.loginForm, function(user) {
                 if (user === 'login error') {
-                    console.log('error logging in!');
+                    alert('error logging in!');
                 } else {
                     thatVm.loginForm.username = '';
                     thatVm.loginForm.password = '';
@@ -356,6 +357,7 @@ var mainAppVue = new Vue({
                     this.signUpForm.canSetUpGear = false;
                 } else {
                     this.signUpForm[key] = '';
+                    this.passwordChecker = '';
                 }
             }
             //clears the equipment form
