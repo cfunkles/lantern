@@ -1,13 +1,26 @@
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
 body {
-    background-color: midnightblue;
+    background-color: rgb(76,118,196);
+    position: relative;
+    margin: 0;
+    min-height: 100vh;
 }
 
 /*styles the background between the navbars*/
 #app {
-    background-color:rgba(255, 255, 255, .90);
+    position: absolute;
+    top: 0;
+    padding-bottom: 50px;
+    margin: 0;
+    width: 100%;
+    min-height: 100vh;
+    background-color:rgba(255, 255, 255, .80);
     color: midnightblue;
     font-family: 'Roboto Slab', serif;
-    padding-top: 50px;
 }
 
 p {
@@ -16,7 +29,7 @@ p {
 
 /*for the content of each navigation section*/
 section {
-    margin: 50px;
+    margin: 75px;
     padding: 10px;
     border: 1px solid midnightblue;
     background-color: rgb(255, 255, 255);
@@ -24,19 +37,33 @@ section {
 }
 
 form.well {
-    width: 50%;
     margin: auto;
+    margin-top: 75px;
+    width: 50%;
 }
 
-footer {
-
+footer{
+    /*background-color: rgb(25,25,112);*/
+    margin-bottom: 0;
+    padding-bottom: 0;
+    position: absolute;
+    right: 0;
+    bottom: 0; 
+    left: 0;
 }
 
 /*styles the navbars*/
 .navbar {
+    background-color: rgb(76,118,196);
+    border: 0;
     margin-bottom: 0;
-    background-color: midnightblue;
+}
+
+.navbar-default .navbar-nav>li>a {
     color: gold;
+    font-size: 14px;
+    letter-spacing: .1em;
+    border-left: 1px solid midnightblue;
 }
 
 /*styles the logo height in nav bar*/
@@ -45,20 +72,29 @@ footer {
 }
 
 /*styles the background of the search section*/
-.logo {
-    background-image: url("IMG_0602.jpg");
+.mountainBackground {
+    background-image: url("IMG_0566.jpg");
     background-size: cover;
     background-repeat: no-repeat;
+    width: 100vw; 
+    margin-top: 50px;
+    height: calc(100vh - 50px);
+}
+
+.mountainBackgroundOther {
+    background-image: url("IMG_0566.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding-top: 75px;
     width: 100vw;
-    height: 370px;
+    height: calc(100vh - 50px);
 }
 
 /*styles logo and positions logo in search box*/
-.logo img {
-    height: 15%;
-    width: 20%;
-    position: absolute;
-    left: 230px;
+.logo {
+    height: 30%;
+    width: 40%;
+    padding-top: 70px;
 }
 
 /*for centering elements*/
@@ -68,9 +104,7 @@ footer {
 
 /*styles the search input and button*/
 .citySearch {
-    position: absolute;
-    left: 40%;
-    top: 210px;
+    margin: auto;
     text-align: center;
     color: midnightblue;
 }
