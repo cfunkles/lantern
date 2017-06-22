@@ -84,7 +84,7 @@
             <p><strong>Email:</strong> {{userInfo.email}}</p>
             <p><strong>State:</strong> {{userInfo.state}}</p>
             <p v-if="userInfo.canSetUpGear === 'true'"><strong>Campsite Builder:</strong> You are willing to help explorers make their camp sites.</p>
-            <p v-if="userInfo.canSetUpGear === 'true'"><strong>Explorer's messages asking for campsite building:</strong> {{userInfo.messages}}</p>
+            <p v-if="userInfo.canSetUpGear === 'true'"><strong>Explorer's messages asking for campsite building:</strong> {{displayMessages}}</p>
         </div>
 
         <!--Registration form. Adds info data to sign up form. All fields required, and terms is a checkbox-->
@@ -242,8 +242,10 @@
                     :key="item._id"
                     class="col-sm-4"
                     ></search-item>
-                <input v-model="searchCity" type="text" placeholder="Search by City">
-                <button class="btn btn-info" v-on:click="submitSearch">Search</button>
+                <div class="bottomButton">
+                    <input v-model="searchCity" type="text" placeholder="Search by City">
+                    <button class="btn btn-info" v-on:click="submitSearch">Search</button>
+                </div>
             </div>
         </div>
 
@@ -261,7 +263,7 @@
                     :key="item._id"
                     class="col-sm-4"
                     ></owned-item>
-                <button v-on:click="clickAddItem" class="btn btn-primary">Add New item!</button>
+                <button v-on:click="clickAddItem" class="btn btn-primary bottomButton">Add New item!</button>
             </div>
         </div>
 
@@ -280,7 +282,7 @@
                     :key="item._id"
                     class="col-sm-4"
                     ></rented-item>
-                <button v-on:click="clickHomeLoggedIn" class="btn btn-primary">Rent more for your exploring</button>
+                <button v-on:click="clickHomeLoggedIn" class="btn btn-primary bottomButton">Rent more for your exploring</button>
             </div>
         </div>
 

@@ -160,6 +160,16 @@ footer{
     font-weight: 700;
 }
 
+.bottomButton {
+    position: absolute;
+    bottom: 50px;
+    left: 40%;
+}
+
+strong {
+    color: darkblue;
+}
+
 /*for dynamic styling of sign up page, doesn't not work*/
 input.password {
     color: green;

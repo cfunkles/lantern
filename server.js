@@ -63,6 +63,7 @@ app.post('/api/user/registration', function(req, res) {
         if (user === null) {
             //creates user only if it doesn't exist
             req.body.ratings = '';
+            req.body.messages = [];
             db.collection('users').insertOne(req.body, function(err, creationInfo) {
                 if (err) {
                     console.log(err);
@@ -268,8 +269,9 @@ app.post('/api/users/message', function(req, res) {
         return;
     }
     console.log('your message', req.body);
-    db.collection('users').insertOne({
-        ObjectID: ObjectID(req.body.owernId)},
+    console.log(req.body.owner);
+    db.collection('users').updateOne(
+        {_id: ObjectID(req.body.owner)},
         {$push: {messages: {sender: req.session.user._id, message: req.body.message}}}, 
         function(err, updateStatus) {
             if (err) {

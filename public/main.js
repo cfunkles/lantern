@@ -86,6 +86,13 @@ var mainAppVue = new Vue({
                 return true;
             }
             else { return false; }
+        },
+        displayMessages: function() {
+            var messages = '';
+            for (var message in this.userInfo.messages) {
+                messages += this.userInfo.messages[message].message + ', ';
+            }
+            return messages;
         }
     },
 
@@ -121,6 +128,7 @@ var mainAppVue = new Vue({
                 this.clickHomeLoggedIn();
                 return;
             }
+            this.getUserInfo();
             this.userClicked = true;
             this.aboutClicked = false;
             this.storyClicked = false;
@@ -234,7 +242,6 @@ var mainAppVue = new Vue({
             if(this.matchPasswords) {
                 console.log('passwords match!');
                 var thatVm=this;
-                //why is the password checker being injected into the signUpForm?
                 console.log(this.signUpForm);
                 $.post('/api/user/registration', this.signUpForm, function(res) {
                     if(res.success) {
@@ -659,9 +666,9 @@ Vue.component('owned-item', {
 Vue.component('rented-item', {
     template: `
         <div class="well myRentalItem">
-            <h3 v-if="!ownedItem" class="center">{{item.name}} {{item.brand}} {{item.model}} Checked out</h3>
-            <h3 v-if="ownedItem" class="center"><strong>Your {{item.name}}</strong> will not be shared on:</h3>
-            <p><strong>{{dates}}</strong></p>
+            <h3 v-if="!ownedItem" class="center">{{item.name}} {{item.brand}} {{item.model}} Checked out for:</h3>
+            <h3 v-if="ownedItem" class="center">Your {{item.name}} will not be shared on:</h3>
+            <p>{{dates}}</p>
             <p><img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment"> </p>
             <p><strong>Condition:</strong> {{item.condition}}</p>
             <p><strong>Size:</strong> {{item.size}}</p>
