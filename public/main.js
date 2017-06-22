@@ -231,6 +231,7 @@ var mainAppVue = new Vue({
                         thatVm.home = true;
                     } else {
                         //to do, make more dynamic controls for this response
+                        alert("Something went wrong");
                         console.log(res);
                         console.log('What!');
                     }
@@ -397,13 +398,13 @@ Vue.component('search-item', {
                 <li>{{item.zip}}</li>
             </ul>
             <input v-model="selectedDate" type="date" min="2017-06-17" max="2018-10-01">
-            <button class="btn btn-info" v-on:click="checkavailibility(item._id)">Check Availibility</button>
+            <button class="btn btn-info" v-on:click="checkavailibility(item._id)">Check Availability</button>
             <button class="btn btn-warning" v-on:click="checkout(item._id)">Check out Item</button>
-            <p v-if="availible">Item availible</p>
-            <p v-if="notAvailible">Item not Availible</p>
-            <p v-if="rented">Success! Item was checked out for {{selectedDate}}</p>
+            <p v-if="availible">Item Available</p>
+            <p v-if="notAvailible">Item Not Available</p>
+            <p v-if="rented">Success! Item was checked out for {{date}}</p>
             <input v-if="item.canSetUpGear === 'true' && rented" v-model="setupmessage" type='text' placeholder="setup message">
-            <button v-if="rented && item.canSetUpGear === 'true'" class="btn btn-success" v-on:click="sendmessage">Send messages</button>
+            <button v-if="rented && item.canSetUpGear === 'true'" class="btn btn-success" v-on:click="sendmessage">Send Message</button>
             <p v-if="empty">Nothing Selected! Enter Date</p>
         </div>
     `,
@@ -421,7 +422,9 @@ Vue.component('search-item', {
         };
     },
     computed:{
-
+        date: function() {
+            return new Date(this.selectedDate).toLocaleDateString();
+        },
     },
     methods:{
         //loops the date array to find availiblity.
@@ -431,6 +434,7 @@ Vue.component('search-item', {
                 $.get('/api/equipments/dates/' + itemId, function(item) {
                     for (var rental in item.usersRenting) {
                         if (thatVm.selectedDate === item.usersRenting[rental].date) {
+                            alert('Unavailable');
                             thatVm.notAvailible = true;
                             thatVm.availible = false;
                             thatVm.empty = false;
@@ -444,6 +448,7 @@ Vue.component('search-item', {
                     thatVm.empty = false;
                 });
             } else {
+                alert('Enter a date!');
                 thatVm.empty = true;
                 thatVm.availible = false;
                 thatVm.notAvailible = false;
@@ -457,6 +462,7 @@ Vue.component('search-item', {
             $.post('/api/equipments/dates', {date: this.selectedDate, objectId: itemId}, function(confirmation) {
                 //add style to handle not being logged in.
                 if(confirmation.duplicated) {
+                    alert('Unavailable');
                     thatVm.notAvailible = true;
                     thatVm.availible = false;
                     thatVm.empty = false;
@@ -464,22 +470,27 @@ Vue.component('search-item', {
                     return;
                 }
                 if(confirmation.success) {
+                    alert('You checked out the ' + thatVm.item.name + ' on ' + new Date(thatVm.selectedDate).toLocaleDateString());
                     thatVm.rented = true;
                     thatVm.notAvailible = false;
                     thatVm.empty = false;
                     return;
                 }
+                alert('Enter a date!');
                 thatVm.empty = true;
                 thatVm.rented = false;
                 thatVm.notAvailible = false;
                 thatVm.availible = false;
+                return;
             });
         },
 
         sendmessage: function() {
             thatVm = this;
             $.post('/api/users/message', {message: this.setupmessage, owner: this.item.ownerId}, function(confirmation) {
-                alert('message sent!');
+                if(confirmation.success) {
+                    alert('message sent!');
+                }
             });
         }
     },
@@ -490,12 +501,12 @@ Vue.component('owned-item', {
         <div class="well myOwnedItem">
             <h3 class="center">Sharing: {{item.name}} {{item.brand}} {{item.model}}</h3>
             <p><img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment"> </p>
-            <p v-if="item.canSetUpGear"> Your are willing to set up this item for the explorer!</p>
+            <p v-if="item.canSetUpGear"> Your are willing to set up this item for the Explorer</p>
             <p v-if="editClicked">Condition: {{item.condition}}</p>
             <p v-if="editClicked">Size: {{item.size}}</p>
             <p v-if="editClicked">Category: {{item.category}}</p>
             <p v-if="editClicked">What you had to say: {{item.description}}</p>
-            <p v-if="editClicked"> Location of Item for explorers to pick up at:</p> 
+            <p v-if="editClicked"> Location of item for Explorers to pick up at:</p> 
             <ul class="address">
                 <li>{{item.address}}</li>
                 <li>{{item.city}}</li>
@@ -506,12 +517,12 @@ Vue.component('owned-item', {
             <button class="btn btn-success" v-on:click="clickCheckout" v-if="!editClicked">Go exploring, Checkout your item</button>
             <button class="btn btn-danger" v-if="!checkoutClicked && !editClicked">Delete Item</button>
             <input v-if="checkoutClicked" v-model="selectedDate" type="date" min="2017-06-17" max="2018-10-01">
-            <button v-if="checkoutClicked" class="btn btn-info" v-on:click="checkavailibility(item._id)">Check Availibility</button>
+            <button v-if="checkoutClicked" class="btn btn-info" v-on:click="checkavailibility(item._id)">Check Availability</button>
             <button v-if="checkoutClicked" class="btn btn-warning" v-on:click="checkout(item._id)">Check out Item</button>
-            <p v-if="availible && checkoutClicked">Item availible</p>
-            <p v-if="notAvailible && checkoutClicked">Item not Availible</p>
-            <p v-if="rented && checkoutClicked">Success! Item was checked out for {{selectedDate}}</p>
-            <p v-if="empty && checkoutClicked">Nothing Selected! Enter Date</p>
+            <p v-if="availible && checkoutClicked">Item Available</p>
+            <p v-if="notAvailible && checkoutClicked">Item Not Available</p>
+            <p v-if="rented && checkoutClicked">Success! Item was checked out for {{date}}</p>
+            <p v-if="empty && checkoutClicked">Nothing Selected. Enter Date</p>
         </div>
     `,
     props : ['item'],
@@ -529,7 +540,9 @@ Vue.component('owned-item', {
         };
     },
     computed:{
-
+        date: function() {
+            return new Date(this.selectedDate).toLocaleDateString();
+        },
     },
     methods:{
         //loops the date array to find availiblity.
@@ -539,6 +552,7 @@ Vue.component('owned-item', {
                 $.get('/api/equipments/dates/' + itemId, function(item) {
                     for (var rental in item.usersRenting) {
                         if (thatVm.selectedDate === item.usersRenting[rental].date) {
+                            alert('Unavailable');
                             thatVm.notAvailible = true;
                             thatVm.availible = false;
                             thatVm.empty = false;
@@ -552,6 +566,7 @@ Vue.component('owned-item', {
                     thatVm.empty = false;
                 });
             } else {
+                alert('Enter a date!');
                 thatVm.empty = true;
                 thatVm.availible = false;
                 thatVm.notAvailible = false;
@@ -573,16 +588,19 @@ Vue.component('owned-item', {
                 }
                 //item was checked out
                 if(confirmation.success) {
+                    alert('Your ' + thatVm.item.name + ' is unavailable for checkout ' + ' on ' + new Date(thatVm.selectedDate).toLocaleDateString());
                     thatVm.rented = true;
                     thatVm.notAvailible = false;
                     thatVm.empty = false;
                     return;
                 }
                 //date input was empty
+                alert('Enter a date!');
                 thatVm.empty = true;
                 thatVm.rented = false;
                 thatVm.notAvailible = false;
                 thatVm.availible = false;
+                return;
             });
         },
 
@@ -613,21 +631,24 @@ Vue.component('owned-item', {
 Vue.component('rented-item', {
     template: `
         <div class="well myRentalItem">
-            <h3 class="center">I am renting this {{item.name}} {{item.brand}} {{item.model}}</h3>
-            <p>I will be using this {{item.name}} on {{dates}}</p>
+            <h3 v-if="!ownedItem" class="center">{{item.name}} {{item.brand}} {{item.model}} Checked out</h3>
+            <h3 v-if="ownedItem" class="center"><strong>This is your {{item.name}}</strong> not available on:</h3>
+            <p>Dates: <strong>{{dates}}</strong></p>
             <p><img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment"> </p>
             <p>Condition: {{item.condition}}</p>
             <p>Size: {{item.size}}</p>
             <p>Category: {{item.category}}</p>
             <p>Description from the Sharer: {{item.description}}</p>
-            <p> Location of Item where I will pick it up: </p>
+            <p> Item is located at: </p>
             <ul class="address">
                 <li>{{item.address}}</li>
                 <li>{{item.city}}</li>
                 <li>{{item.state}}</li>
                 <li>{{item.zip}}</li>
             </ul>
-            <p v-if="item.canSetUpGear">You can contact the Sharer to get this item set up!</p>
+            <h4 class="center" v-if="item.canSetUpGear && !ownedItem">Start a conversation with the Sharer to discussion campsite set up details!</h4>
+            <input v-if="item.canSetUpGear && !ownedItem" v-model="message" type="text" placeholder="Message to Sharer">
+            <button v-if="item.canSetUpGear && !ownedItem" class="btn btn-info" v-on:click="sendmessage">Message to Sharer</button>
         </div>
     `,
     props : ['item', 'userid'],
@@ -635,6 +656,7 @@ Vue.component('rented-item', {
         // we use a function for data on components so that each component gets unique data, not references to each other's data
         return {
              userId: this.userid,
+             message: '',
             //  dates: this.findTheCheckoutDates 
         };
     },
@@ -647,9 +669,23 @@ Vue.component('rented-item', {
                 }
             }
             return dates;
+        },
+        ownedItem: function() {
+            for (var checkout in this.item.usersRenting) {
+                if(this.userId === this.item.ownerId) {
+                    return true;
+                }
+            }
         }
     },
     methods:{
-       
+       sendmessage: function() {
+            thatVm = this;
+            $.post('/api/users/message', {message: this.setupmessage, owner: this.item.ownerId}, function(confirmation) {
+                if(confirmation.success) {
+                    alert('message sent!');
+                }
+            });
+        }
     },
 });

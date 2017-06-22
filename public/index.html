@@ -53,6 +53,7 @@
             <div class="center citySearch">
                 <input v-model="searchCity" type="text" class="center" placeholder="Enter City">
                 <button class="btn btn-info" v-on:click="submitSearch">Search for Item</button>
+                <h2 v-if="loggedIn">Hello {{userInfo.name}}!</h2>
             </div>
         </div>
 
@@ -218,12 +219,12 @@
         <!--search results section-->
         <section class="container" v-if="searchMade">
             <div class="center" v-if="equipmentArray.length === 0">
-                <h2>No Results!</h2>
+                <h2>No Results</h2>
                 <input v-model="searchCity" type="text" placeholder="Search by City">
                 <button class="btn btn-info" v-on:click="submitSearch">Search</button>
             </div>
-            <div class="center row" v-if="equipmentArray.length > 0">
-                <h2>Results!</h2>
+            <div class="row" v-if="equipmentArray.length > 0">
+                <h2 class="center">Results</h2>
                 <search-item 
                     v-for="item in equipmentArray" 
                     v-bind:item="item"
@@ -241,8 +242,8 @@
                 <h2>No Items Yet!</h2>
                 <button v-on:click="clickAddItem" class="btn btn-primary">Add item!</button>
             </div>
-            <div class="center row" v-if="equipmentArray.length > 0">
-                <h2>Items you are sharing</h2>
+            <div class="row" v-if="equipmentArray.length > 0">
+                <h2 class="center">Items you are sharing</h2>
                 <owned-item 
                     v-for="item in equipmentArray" 
                     v-bind:item="item"
@@ -259,8 +260,8 @@
                 <h2>Nothing Checked Out</h2>
                 <button v-on:click="clickHomeLoggedIn" class="btn btn-primary">Find Something</button>
             </div>
-            <div class="center row" v-if="equipmentArray.length > 0">
-                <h2>Item(s) you have checked out</h2>
+            <div class="row" v-if="equipmentArray.length > 0">
+                <h2 class="center">Item(s) you have checked out</h2>
                 <rented-item 
                     v-for="item in equipmentArray" 
                     v-bind:item="item"
