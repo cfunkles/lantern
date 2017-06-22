@@ -42,6 +42,12 @@ form.well {
     width: 50%;
 }
 
+.user {
+    margin: auto;
+    margin-top: 75px;
+    width: 50%;
+}
+
 footer{
     /*background-color: rgb(25,25,112);*/
     margin-bottom: 0;
@@ -117,6 +123,10 @@ footer{
 
 .instructions {
     list-style-type: none;
+}
+
+.items {
+    margin-top: 75px;
 }
 
 /*for the vue componets in the search results*/

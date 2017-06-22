@@ -77,12 +77,14 @@
             </div>
         </section>
 
-        <div v-if="userClicked" class="well">
-            <br>
-            <br>
-            <br>
+        <div v-if="userClicked" class="well user container">
             <h3 class="center">User Information</h3>
-            <div>{{userInfo}}</div>
+            <p><strong>Name:</strong> {{userInfo.name}}</p>
+            <p><strong>Username:</strong> {{userInfo.username}}</p>
+            <p><strong>Email:</strong> {{userInfo.email}}</p>
+            <p><strong>State:</strong> {{userInfo.state}}</p>
+            <p v-if="userInfo.canSetUpGear === 'true'"><strong>Campsite Builder:</strong> You are willing to help explorers make their camp sites.</p>
+            <p v-if="userInfo.canSetUpGear === 'true'"><strong>Explorer's messages asking for campsite building:</strong> {{userInfo.messages}}</p>
         </div>
 
         <!--Registration form. Adds info data to sign up form. All fields required, and terms is a checkbox-->
@@ -226,7 +228,7 @@
         </form>
 
         <!--search results section-->
-        <section class="container" v-if="searchMade">
+        <div class="items" v-if="searchMade">
             <div class="center" v-if="equipmentArray.length === 0">
                 <h2>No Results</h2>
                 <input v-model="searchCity" type="text" placeholder="Search by City">
@@ -243,10 +245,10 @@
                 <input v-model="searchCity" type="text" placeholder="Search by City">
                 <button class="btn btn-info" v-on:click="submitSearch">Search</button>
             </div>
-        </section>
+        </div>
 
         <!--profile owned items-->
-        <section class="container" v-if="loggedIn && ownedClicked">
+        <div class="items" v-if="loggedIn && ownedClicked">
             <div class="center" v-if="equipmentArray.length === 0">
                 <h2>No Items Yet!</h2>
                 <button v-on:click="clickAddItem" class="btn btn-primary">Add item!</button>
@@ -261,10 +263,10 @@
                     ></owned-item>
                 <button v-on:click="clickAddItem" class="btn btn-primary">Add New item!</button>
             </div>
-        </section>
+        </div>
 
         <!--Profile Rented Items section-->
-        <section class="container" v-if="loggedIn && rentedClicked">
+        <div class="items" v-if="loggedIn && rentedClicked">
             <div class="center" v-if="equipmentArray.length === 0">
                 <h2>Nothing Checked Out</h2>
                 <button v-on:click="clickHomeLoggedIn" class="btn btn-primary">Find Something</button>
@@ -280,7 +282,7 @@
                     ></rented-item>
                 <button v-on:click="clickHomeLoggedIn" class="btn btn-primary">Rent more for your exploring</button>
             </div>
-        </section>
+        </div>
 
         <!--create new item section-->
         <form v-on:submit="submitNewEquipment"  v-if="loggedIn && addGearClicked" class="form-horizontal well">

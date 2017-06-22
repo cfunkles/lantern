@@ -406,12 +406,12 @@ Vue.component('search-item', {
         <div class="well mySearchedItem">
             <h3 class="center">{{item.name}} {{item.brand}} {{item.model}}</h3>
             <p><img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment"> </p>
-            <p>Condition: {{item.condition}}</p>
-            <p>Size: {{item.size}}</p>
-            <p>Category: {{item.category}}</p>
-            <p>Description from the Sharer: {{item.description}}</p>
-            <p v-if="item.canSetUpGear === 'true'">This user would be happy to set up your gear, Contact them to set up details</p>
-            <p> Location of Item: </p>
+            <p><strong>Condition:</strong> {{item.condition}}</p>
+            <p><strong>Size:</strong> {{item.size}}</p>
+            <p><strong>Category:</strong> {{item.category}}</p>
+            <p><strong>Description from the Sharer:</strong> {{item.description}}</p>
+            <p v-if="item.canSetUpGear === 'true'"><strong>Campsite Builder:</strong> The Sharer of this item can help build your campsite, send message after checkout to give them camping trip details</p>
+            <p><strong>Location of Item:</strong></p>
             <ul class="address">
                 <li>{{item.address}}</li>
                 <li>{{item.city}}</li>
@@ -522,13 +522,14 @@ Vue.component('owned-item', {
         <div class="well myOwnedItem">
             <h3 class="center">Sharing: {{item.name}} {{item.brand}} {{item.model}}</h3>
             <p><img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment"> </p>
-            <p v-if="item.canSetUpGear"> Your are willing to set up this item for the Explorer</p>
-            <p v-if="editClicked">Condition: {{item.condition}}</p>
-            <p v-if="editClicked">Size: {{item.size}}</p>
-            <p v-if="editClicked">Category: {{item.category}}</p>
-            <p v-if="editClicked">What you had to say: {{item.description}}</p>
-            <p v-if="editClicked"> Location of item for Explorers to pick up at:</p> 
-            <ul class="address">
+            <p><strong>Item Checked out for:</strong> {{rentalDates}}</p>
+            <p v-if="item.canSetUpGear"><strong>Campsite Builder:</strong> You may be contacted to help build a campsite for this person, check for messages in your user information.</p>
+            <p v-if="editClicked"><strong>Condition:</strong> {{item.condition}}</p>
+            <p v-if="editClicked"><strong>Size:</strong> {{item.size}}</p>
+            <p v-if="editClicked"><strong>Category:</strong> {{item.category}}</p>
+            <p v-if="editClicked"><strong>What you had to say:</strong> {{item.description}}</p>
+            <p v-if="editClicked"><strong>Address for explorer to pick up item:</strong></p> 
+            <ul v-if="editClicked" class="address">
                 <li>{{item.address}}</li>
                 <li>{{item.city}}</li>
                 <li>{{item.state}}</li>
@@ -564,6 +565,12 @@ Vue.component('owned-item', {
         date: function() {
             return new Date(this.selectedDate).toLocaleDateString();
         },
+        rentalDates: function() {
+            for (var checkouts in this.item.usersRenting) {
+                return new Date(this.item.usersRenting[checkouts].date).toLocaleDateString() + ',';
+            }
+        }
+
     },
     methods:{
         //loops the date array to find availiblity.
@@ -653,14 +660,14 @@ Vue.component('rented-item', {
     template: `
         <div class="well myRentalItem">
             <h3 v-if="!ownedItem" class="center">{{item.name}} {{item.brand}} {{item.model}} Checked out</h3>
-            <h3 v-if="ownedItem" class="center"><strong>This is your {{item.name}}</strong> not available on:</h3>
-            <p>Dates: <strong>{{dates}}</strong></p>
+            <h3 v-if="ownedItem" class="center"><strong>Your {{item.name}}</strong> will not be shared on:</h3>
+            <p><strong>{{dates}}</strong></p>
             <p><img class="equipmentImage" v-bind:src="'./images/' + item.imageFileName" alt="image of equipment"> </p>
-            <p>Condition: {{item.condition}}</p>
-            <p>Size: {{item.size}}</p>
-            <p>Category: {{item.category}}</p>
-            <p>Description from the Sharer: {{item.description}}</p>
-            <p> Item is located at: </p>
+            <p><strong>Condition:</strong> {{item.condition}}</p>
+            <p><strong>Size:</strong> {{item.size}}</p>
+            <p><strong>Category:</strong> {{item.category}}</p>
+            <p><strong>Description from the Sharer:</strong> {{item.description}}</p>
+            <p><strong>Address for pick up:</strong> </p>
             <ul class="address">
                 <li>{{item.address}}</li>
                 <li>{{item.city}}</li>
