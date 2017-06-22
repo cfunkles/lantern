@@ -32,6 +32,7 @@
                     <li v-if="loggedIn" class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="dropdownMenu1" role="button" aria-haspopup="true" aria-expanded="false">Profile <span class="caret"></span></a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li v-if="loggedIn"  v-on:click="clickUser"><a href="#">User Information</a></li>
                             <li v-if="loggedIn"  v-on:click="clickOwned"><a href="#">Shared Items</a></li>
                             <li v-if="loggedIn" v-on:click="clickRented"><a href="#">Rented Items</a></li>
                             <li v-if="loggedIn" v-on:click="clickAddItem"><a href="#">Add Item</a></li>
@@ -75,6 +76,14 @@
                 <button v-if="!loggedIn" v-on:click="clickLogin" class="btn btn-default">Already Register, Click Here</button>
             </div>
         </section>
+
+        <div v-if="userClicked" class="well">
+            <br>
+            <br>
+            <br>
+            <h3 class="center">User Information</h3>
+            <div>{{userInfo}}</div>
+        </div>
 
         <!--Registration form. Adds info data to sign up form. All fields required, and terms is a checkbox-->
         <form class="well form-horizontal" v-if="createAccountClicked" v-on:submit="submitNewAccount">

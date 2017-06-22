@@ -1,0 +1,2 @@
+Sparse data out of get requests to not send too much important information
+Create better communication of data flows

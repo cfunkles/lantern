@@ -66,6 +66,7 @@ var mainAppVue = new Vue({
         aboutClicked: false,
         storyClicked: false,
         addGearClicked: false,
+        userClicked: false,
         ownedClicked: false,
         rentedClicked: false,
         home: true,
@@ -115,6 +116,20 @@ var mainAppVue = new Vue({
             this.searchMade = false;
             this.home = false;
         },
+        clickUser: function() {
+            if (this.userClicked) {
+                this.clickHomeLoggedIn();
+                return;
+            }
+            this.userClicked = true;
+            this.aboutClicked = false;
+            this.storyClicked = false;
+            this.addGearClicked = false;
+            this.ownedClicked = false;
+            this.rentedClicked = false;
+            this.searchMade = false;
+            this.home = false;
+        },
         clickNavAbout: function() {
             if(this.aboutClicked) {
                 this.clickHome();
@@ -129,6 +144,7 @@ var mainAppVue = new Vue({
             this.loginClicked = false;
             this.createAccountClicked = false;
             this.searchMade = false;
+            this.userClicked = false;
             this.home = false;
         },
         clickNavStory: function() {
@@ -143,6 +159,7 @@ var mainAppVue = new Vue({
             this.rentedClicked = false;
             this.addGearClicked =false;
             this.loginClicked = false;
+            this.userClicked = false;
             this.createAccountClicked = false;
             this.searchMade = false;
             this.home = false;
@@ -156,6 +173,7 @@ var mainAppVue = new Vue({
             this.storyClicked = false;
             this.aboutClicked = false;
             this.ownedClicked = false;
+            this.userClicked = false;
             this.rentedClicked = false;
             this.searchMade = false;
             this.home = false;
@@ -170,6 +188,7 @@ var mainAppVue = new Vue({
             this.rentedClicked = false;
             this.addGearClicked = false;
             this.storyClicked = false;
+            this.userClicked = false;
             this.aboutClicked = false;
             this.searchMade = false;
             this.home = false;
@@ -184,6 +203,7 @@ var mainAppVue = new Vue({
             this.ownedClicked = false;
             this.addGearClicked = false;
             this.storyClicked = false;
+            this.userClicked = false;
             this.aboutClicked = false;
             this.searchMade = false;
             this.home = false;
@@ -204,6 +224,7 @@ var mainAppVue = new Vue({
             this.ownedClicked = false;
             this.rentedClicked = false;
             this.searchMade = false;
+            this.userClicked = false;
         },
 
 
