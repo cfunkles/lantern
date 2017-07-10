@@ -85,12 +85,16 @@
             <p><strong>Email:</strong> {{userInfo.email}}</p>
             <p><strong>State:</strong> {{userInfo.state}}</p>
             <p v-if="userInfo.canSetUpGear === 'true'"><strong>Campsite Builder:</strong> You are willing to help explorers make their camp sites.</p>
-            <div v-if="userInfo.canSetUpGear === 'true'">
-                <recieved-messages 
-                    v-for="message in userInfo.messages" 
-                    v-bind:message="message"
-                    ></recieved-messages>
+            <div class="center">
+                <button class="btn btn-info" v-on:click="clickMessages">Messages</button>
+                <p v-if="messagesClicked && userInfo.messages.length === 0">No Messages!</p>
             </div>
+            <recieved-messages
+                v-if="messagesClicked && userInfo.messages.length > 0"
+                v-for="message in userInfo.messages" 
+                v-bind:message="message"
+                :key="message.sender"
+                ></recieved-messages>
         </div>
 
         <!--Registration form. Adds info data to sign up form. All fields required, and terms is a checkbox-->
@@ -245,6 +249,7 @@
                 <search-item 
                     v-for="item in equipmentArray" 
                     v-bind:item="item"
+                    v-bind:name="userInfo.name"
                     :key="item._id"
                     class="col-sm-4"
                     ></search-item>
@@ -285,6 +290,7 @@
                     v-for="item in equipmentArray" 
                     v-bind:item="item"
                     v-bind:userid="userInfo._id"
+                    v-bind:name="userInfo.name"
                     :key="item._id"
                     class="col-sm-4"
                     ></rented-item>

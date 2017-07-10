@@ -274,7 +274,7 @@ app.post('/api/users/message', function(req, res) {
     console.log(req.body.owner);
     db.collection('users').updateOne(
         {_id: ObjectID(req.body.owner)},
-        {$push: {messages: {sender: req.session.user._id, message: req.body.message}}}, 
+        {$push: {messages: {senderId: req.session.user._id, message: req.body.message, senderName: req.body.senderName}}}, 
         function(err, updateStatus) {
             if (err) {
                 console.log(err);

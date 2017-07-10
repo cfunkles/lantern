@@ -160,6 +160,15 @@ footer{
     font-weight: 700;
 }
 
+.message {
+    border: 1px solid midnightblue;
+    border-radius: 5%;
+    width: 70%;
+    margin: auto;
+    background-color: gainsboro;
+    text-align: center;
+}
+
 .bottomButton {
     position: absolute;
     bottom: 50px;

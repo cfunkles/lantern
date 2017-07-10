@@ -21,7 +21,7 @@ var mainAppVue = new Vue({
             password: '',
         },
 
-        //info grabbed users objectID uppon login
+        //info grabbed users objectID upon login
         userInfo: {
             username: '',
             name: '',
@@ -71,6 +71,7 @@ var mainAppVue = new Vue({
         rentedClicked: false,
         home: true,
         searchMade: false,
+        messagesClicked: false,
     },
 
 
@@ -233,6 +234,13 @@ var mainAppVue = new Vue({
             this.rentedClicked = false;
             this.searchMade = false;
             this.userClicked = false;
+        },
+        clickMessages: function() {
+            if(this.messagesClicked) {
+                this.messagesClicked = false;
+                return;
+            }
+            this.messagesClicked = true;
         },
 
 
@@ -436,7 +444,7 @@ Vue.component('search-item', {
             <p v-if="empty">Nothing Selected! Enter Date</p>
         </div>
     `,
-    props : ['item'],
+    props : ['item', 'name'],
     data: function(){
         // we use a function for data on components so that each component gets unique data, not references to each other's data
         return {
@@ -447,6 +455,7 @@ Vue.component('search-item', {
             //to do find way to not show rented when date has changed
             empty: false,
             setupmessage: '',
+            senderName: this.name,
         };
     },
     computed:{
@@ -515,7 +524,7 @@ Vue.component('search-item', {
 
         sendmessage: function() {
             thatVm = this;
-            $.post('/api/users/message', {message: this.setupmessage, owner: this.item.ownerId}, function(confirmation) {
+            $.post('/api/users/message', {message: this.setupmessage, owner: this.item.ownerId, senderName: this.senderName}, function(confirmation) {
                 if(confirmation.success) {
                     alert('message sent!');
                 }
@@ -686,12 +695,13 @@ Vue.component('rented-item', {
             <button v-if="item.canSetUpGear && !ownedItem" class="btn btn-info" v-on:click="sendmessage">Message to Sharer</button>
         </div>
     `,
-    props : ['item', 'userid'],
+    props : ['item', 'userid', 'name'],
     data: function(){
         // we use a function for data on components so that each component gets unique data, not references to each other's data
         return {
              userId: this.userid,
              message: '',
+             senderName: this.name,
             //  dates: this.findTheCheckoutDates 
         };
     },
@@ -716,7 +726,7 @@ Vue.component('rented-item', {
     methods:{
        sendmessage: function() {
             thatVm = this;
-            $.post('/api/users/message', {message: this.setupmessage, owner: this.item.ownerId}, function(confirmation) {
+            $.post('/api/users/message', {message: this.message, owner: this.item.ownerId, senderName: this.senderName}, function(confirmation) {
                 if(confirmation.success) {
                     alert('message sent!');
                 }
@@ -727,8 +737,10 @@ Vue.component('rented-item', {
 
 Vue.component('recieved-messages', {
     template: `
-        <p><strong>Senders Name:</strong> {{message.sender}}</p>
-        <p><strong>Says:</strong> {{message.message}}</p>
+        <div class="message">
+            <p><strong>Senders Name:</strong> {{message.senderName}}</p>
+            <p><strong>Says:</strong> {{message.message}}</p>
+        </div>
     `,
     props: ['message'],
 });
