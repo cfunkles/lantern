@@ -77,6 +77,7 @@
             </div>
         </section>
 
+        <!--dashboard section-->
         <div v-if="userClicked" class="well user container">
             <h3 class="center">User Information</h3>
             <p><strong>Name:</strong> {{userInfo.name}}</p>
@@ -84,7 +85,12 @@
             <p><strong>Email:</strong> {{userInfo.email}}</p>
             <p><strong>State:</strong> {{userInfo.state}}</p>
             <p v-if="userInfo.canSetUpGear === 'true'"><strong>Campsite Builder:</strong> You are willing to help explorers make their camp sites.</p>
-            <p v-if="userInfo.canSetUpGear === 'true'"><strong>Explorer's messages asking for campsite building:</strong> {{displayMessages}}</p>
+            <div v-if="userInfo.canSetUpGear === 'true'">
+                <recieved-messages 
+                    v-for="message in userInfo.messages" 
+                    v-bind:message="message"
+                    ></recieved-messages>
+            </div>
         </div>
 
         <!--Registration form. Adds info data to sign up form. All fields required, and terms is a checkbox-->

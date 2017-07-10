@@ -109,6 +109,7 @@ app.post('/api/user/login', function(req, res) {
             return;
         }
         console.log('user logged in!', req.body.username);
+        console.log(user);
         setUpSession(req, user);
         res.send(user);
     });
@@ -258,6 +259,7 @@ app.post('/api/equipments/dates', function(req, res) {
     });
 });
 
+//request to send message to user
 app.post('/api/users/message', function(req, res) {
     if(!req.session.user){
         res.status(403);

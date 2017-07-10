@@ -724,3 +724,11 @@ Vue.component('rented-item', {
         }
     },
 });
+
+Vue.component('recieved-messages', {
+    template: `
+        <p><strong>Senders Name:</strong> {{message.sender}}</p>
+        <p><strong>Says:</strong> {{message.message}}</p>
+    `,
+    props: ['message'],
+});
