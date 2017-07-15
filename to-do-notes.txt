@@ -4,7 +4,6 @@ Figure out what happens with deleted users items
 Think about how to edit items
 How to delete items
 better interface for items
-add password hashing
 look at data security
 make moble responsive
 get boolean values to be booleans and not strings
