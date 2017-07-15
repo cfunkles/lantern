@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 var multer = require('multer');
+var bcrypt = require('bcrypt');
+const saltRounds = 10;//number of salt rounds for bcrypt password hashing
 
 //body parser boilerplate
 var bodyParser = require('body-parser');
@@ -44,11 +46,11 @@ mongodb.MongoClient.connect("mongodb://localhost", function(err, database) {
 //register new user route
 app.post('/api/user/registration', function(req, res) {
     //validates form entries
-    //add this validation check later
-    // if(req.body.password.length < 10) {
-    //     res.send('password error');
-    //     return;
-    // }
+    //uses this check in production mode.
+    if(req.body.password.length < 8) {
+        res.send('password error');
+        return;
+    }
     var requiredInput = ['username', 'password', 'name', 'state', 'email', 'agreedToTerms'];
     for (var i = 0; i < requiredInput.length; i++) {
         if (req.body[requiredInput[i]] === undefined) {
@@ -64,16 +66,27 @@ app.post('/api/user/registration', function(req, res) {
             //creates user only if it doesn't exist
             req.body.ratings = '';
             req.body.messages = [];
-            db.collection('users').insertOne(req.body, function(err, creationInfo) {
+            bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
                 if (err) {
                     console.log(err);
                     res.status(500);
-                    res.send("error");
+                    res.send('error');
                     return;
                 }
-                setUpSession(req, req.body);
-                res.send({success:'success'});
-                console.log('account created!', req.body.name);
+                console.log(req.body.password);
+                req.body.password = hash;
+                console.log(req.body.password);
+                db.collection('users').insertOne(req.body, function(err, creationInfo) {
+                    if (err) {
+                        console.log(err);
+                        res.status(500);
+                        res.send("error");
+                        return;
+                    }
+                    setUpSession(req, req.body);
+                    res.send({success:'success'});
+                    console.log('account created!', req.body.name);
+                });
             });
         } else {
             res.send('exists');
@@ -103,15 +116,25 @@ app.get('/api/user', function(req, res) {
 
 //login route
 app.post('/api/user/login', function(req, res) {
-    db.collection('users').findOne(req.body, function(err, user) {
+    db.collection('users').findOne({username:req.body.username}, function(err, user) {
         if(user === null) {
-            res.send('login error');
+            res.status(403);
+            res.send('null');
             return;
         }
-        console.log('user logged in!', req.body.username);
-        console.log(user);
-        setUpSession(req, user);
-        res.send(user);
+        //compares password hashes
+        bcrypt.compare(req.body.password, user.password, function(err, matched) {
+            if (!matched){
+                console.log('password doesn\'t match'); 
+                res.status(403);
+                res.send('login failed'); 
+            } else {
+                console.log('user logged in!', req.body.username);
+                console.log(user);
+                setUpSession(req, user);
+                res.send(user);
+            }
+        });
     });
 });
 

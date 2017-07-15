@@ -78,15 +78,15 @@ var mainAppVue = new Vue({
 
     computed: {
         //checks two password inputs for equalness. returns boolean when evaluated
-        matchPasswords: function() {
-            if(this.signUpForm.password === this.passwordChecker) {
-                //add this feature later
-                // if(password.length > 7) {
-                //     return true;
-                // }
+        checkPasswords: function() {
+            //only use password length validation check in production mode
+            if(this.signUpForm.password === this.passwordChecker && this.signUpForm.password.length > 7) {
                 return true;
             }
-            else { return false; }
+            else { 
+                console.log('false');
+                return false; 
+            }
         },
         displayMessages: function() {
             var messages = '';
@@ -247,10 +247,9 @@ var mainAppVue = new Vue({
         //Function for new users who sign up
         submitNewAccount: function(event) {
             event.preventDefault();
-            if(this.matchPasswords) {
+            if(this.checkPasswords) {
                 console.log('passwords match!');
                 var thatVm=this;
-                console.log(this.signUpForm);
                 $.post('/api/user/registration', this.signUpForm, function(res) {
                     if(res.success) {
                         console.log('account created and logged in!');
@@ -267,13 +266,12 @@ var mainAppVue = new Vue({
                         thatVm.home = true;
                     } else {
                         //to do, make more dynamic controls for this response
-                        alert("Something went wrong");
+                        alert("Username taken");
                         console.log(res);
-                        console.log('What!');
                     }
                 });
             } else {
-                alert('Passwords do no match');
+                alert('Passwords do no match or don\'t meet requirements');
             }
         },
 
@@ -298,8 +296,12 @@ var mainAppVue = new Vue({
             event.preventDefault();
             var thatVm = this;
             $.post('/api/user/login', this.loginForm, function(user) {
-                if (user === 'login error') {
-                    alert('error logging in!');
+                //fix these error handeling messages to run
+                if (user === 'null') {
+                    alert('no account on file');
+                }
+                if (user === 'login failed') {
+                    alert('Incorrect login');
                 } else {
                     thatVm.loginForm.username = '';
                     thatVm.loginForm.password = '';
@@ -368,7 +370,7 @@ var mainAppVue = new Vue({
         //runs when submit selected
         submitSearch: function() {
             thatVm = this;
-            //for no inputing search string
+            //for inputing empty search string
             if (!this.searchCity) {
                 $.get('/api/equipments/all', function(allArray) {
                     thatVm.equipmentArray = allArray;
