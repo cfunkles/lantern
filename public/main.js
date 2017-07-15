@@ -297,12 +297,7 @@ var mainAppVue = new Vue({
             var thatVm = this;
             $.post('/api/user/login', this.loginForm, function(user) {
                 //fix these error handeling messages to run
-                if (user === 'null') {
-                    alert('no account on file');
-                }
-                if (user === 'login failed') {
-                    alert('Incorrect login');
-                } else {
+                if (user) {
                     thatVm.loginForm.username = '';
                     thatVm.loginForm.password = '';
                     thatVm.loginClicked = false;
@@ -311,6 +306,8 @@ var mainAppVue = new Vue({
                     thatVm.home = true;
                     thatVm.setUserInfo(user);
                     thatVm.getOwnedItems();
+                } else {
+                    alert('Login Error');
                 }
             });
         },
