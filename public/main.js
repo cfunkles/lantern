@@ -295,9 +295,12 @@ var mainAppVue = new Vue({
         submitLogin: function(event) {
             event.preventDefault();
             var thatVm = this;
-            $.post('/api/user/login', this.loginForm, function(user) {
-                //fix these error handeling messages to run
-                if (user) {
+            $.ajax({
+                url: '/api/user/login',
+                method: 'POST',
+                data: this.loginForm, 
+                success: function(user) {
+                    console.log(user);
                     thatVm.loginForm.username = '';
                     thatVm.loginForm.password = '';
                     thatVm.loginClicked = false;
@@ -306,8 +309,12 @@ var mainAppVue = new Vue({
                     thatVm.home = true;
                     thatVm.setUserInfo(user);
                     thatVm.getOwnedItems();
-                } else {
-                    alert('Login Error');
+                },
+                error: function (xhr, textStatus, thrownError) {
+                    alert(xhr.responseText);
+                    console.log(thrownError);
+                    thatVm.loginForm.username = '';
+                    thatVm.loginForm.password = '';
                 }
             });
         },

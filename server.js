@@ -119,15 +119,14 @@ app.post('/api/user/login', function(req, res) {
     db.collection('users').findOne({username:req.body.username}, function(err, user) {
         if(user === null) {
             res.status(403);
-            res.send('null');
+            res.send('login failed');
             return;
         }
         //compares password hashes
         bcrypt.compare(req.body.password, user.password, function(err, matched) {
             if (!matched){
-                console.log('password doesn\'t match'); 
                 res.status(403);
-                res.send('login failed'); 
+                res.send('Login failed'); 
             } else {
                 console.log('user logged in!', req.body.username);
                 console.log(user);
