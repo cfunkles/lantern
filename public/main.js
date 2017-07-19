@@ -293,6 +293,7 @@ var mainAppVue = new Vue({
 
         //run when clicking submit on log in form
         submitLogin: function(event) {
+            //to do, still fix live site prevent VM loggin when not successfull.
             event.preventDefault();
             var thatVm = this;
             $.ajax({

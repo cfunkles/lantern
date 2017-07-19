@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var multer = require('multer');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 const saltRounds = 10;//number of salt rounds for bcrypt password hashing
 
 //body parser boilerplate
